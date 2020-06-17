@@ -67,7 +67,7 @@
     "@typescript-eslint/typescript-estree": "^2.17.0",
     "babel-preset-react-app": "^7.0.2",
     "bull": "^3.13.0",
-    "bullmq": "^1.8.2",
+    "bullmq": "1.8.13",
     "css-loader": "^3.4.2",
     "dockest": "2.0.0-beta.2",
     "eslint": "^6.8.0",

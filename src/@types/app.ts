@@ -22,8 +22,8 @@ export interface ValidMetrics {
 export interface AppJob {
   id: string | number | undefined
   timestamp: number | null
-  processedOn: number | null
-  finishedOn: number | null
+  processedOn: number | null | undefined
+  finishedOn: number | null | undefined
   progress: JobMq['progress']
   attempts: JobMq['attemptsMade']
   failedReason: JobMq['failedReason']

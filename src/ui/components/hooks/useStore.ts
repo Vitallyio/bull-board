@@ -51,6 +51,7 @@ export const useStore = (basePath: string): Store => {
 
   const runPolling = () => {
     update()
+      // eslint-disable-next-line no-console
       .catch(error => console.error('Failed to poll', error))
       .then(() => {
         const timeoutId = setTimeout(runPolling, interval)
