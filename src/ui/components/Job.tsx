@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React from 'react'
 import { formatDistanceStrict } from 'date-fns'
 import Highlight from 'react-highlight'
 import { AppJob } from '../../@types/app'
@@ -34,8 +34,6 @@ const fieldComponents: Record<Field, React.FC<FieldProps>> = {
       )}
     </div>
   ),
-
-  name: ({ job }) => <>{job.name === '__default__' ? '--' : job.name}</>,
 
   progress: ({ job }) => {
     switch (typeof job.progress) {
@@ -89,13 +87,10 @@ const fieldComponents: Record<Field, React.FC<FieldProps>> = {
   },
 
   data: ({ job }) => {
-    const [showData, toggleData] = useState(false)
-
     return (
       <>
-        <button onClick={() => toggleData(!showData)}>Toggle data</button>
         <Highlight className="json">
-          {showData && JSON.stringify(job.data, null, 2)}
+          {JSON.stringify(job.data, null, 2)}
         </Highlight>
       </>
     )
