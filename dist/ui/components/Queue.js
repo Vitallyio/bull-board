@@ -25,10 +25,25 @@ const QueueActions = ({ status, retryAll, cleanAllFailed, cleanAllDelayed, clean
 };
 // We need to extend so babel doesn't think it's JSX
 const keysOf = (target) => Object.keys(target);
-exports.Queue = ({ cleanAllDelayed, cleanAllFailed, cleanAllCompleted, queue, retryAll, retryJob, promoteJob, selectedStatus, selectStatus, }) => (react_1.default.createElement("section", null,
-    react_1.default.createElement("h3", null, queue.name),
-    react_1.default.createElement("div", { className: "menu-list" }, keysOf(constants_1.STATUSES).map(status => (react_1.default.createElement(MenuItem, { key: `${queue.name}-${status}`, status: status, count: queue.counts[status], onClick: () => selectStatus({ [queue.name]: status }), selected: selectedStatus === status })))),
-    selectedStatus && (react_1.default.createElement(react_1.default.Fragment, null,
-        react_1.default.createElement(QueueActions, { retryAll: retryAll, cleanAllDelayed: cleanAllDelayed, cleanAllFailed: cleanAllFailed, cleanAllCompleted: cleanAllCompleted, queue: queue, status: selectedStatus }),
-        react_1.default.createElement(Jobs_1.Jobs, { retryJob: retryJob, promoteJob: promoteJob, queue: queue, status: selectedStatus })))));
+exports.Queue = ({ cleanAllDelayed, cleanAllFailed, cleanAllCompleted, queue, retryAll, retryJob, promoteJob, selectedStatus, selectStatus, }) => {
+    const currentJobSelected = selectedStatus != null && selectedStatus[0] === queue.name;
+    return (react_1.default.createElement("section", null,
+        react_1.default.createElement("h3", null, queue.name),
+        react_1.default.createElement("div", { className: "menu-list" }, keysOf(constants_1.STATUSES).map(status => (react_1.default.createElement(MenuItem, { key: `${queue.name}-${status}`, status: status, count: queue.counts[status], onClick: () => {
+                // Clear status if currently expanded
+                if (selectedStatus &&
+                    queue.name === selectedStatus[0] &&
+                    status === selectedStatus[1]) {
+                    selectStatus(undefined);
+                }
+                else {
+                    selectStatus([queue.name, status]);
+                }
+            }, selected: currentJobSelected &&
+                selectedStatus != null &&
+                selectedStatus[1] === status })))),
+        currentJobSelected && selectedStatus && (react_1.default.createElement(react_1.default.Fragment, null,
+            react_1.default.createElement(QueueActions, { retryAll: retryAll, cleanAllDelayed: cleanAllDelayed, cleanAllFailed: cleanAllFailed, cleanAllCompleted: cleanAllCompleted, queue: queue, status: selectedStatus[1] }),
+            react_1.default.createElement(Jobs_1.Jobs, { retryJob: retryJob, promoteJob: promoteJob, queue: queue, status: selectedStatus[1] })))));
+};
 //# sourceMappingURL=Queue.js.map

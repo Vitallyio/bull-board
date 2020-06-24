@@ -1,10 +1,10 @@
 /// <reference types="react" />
-import { Status } from './constants';
 import { AppQueue, AppJob } from '../../@types/app';
+import { SelectedStatus } from '../components/hooks/useStore';
 interface QueueProps {
     queue: AppQueue;
-    selectedStatus: Status;
-    selectStatus: (statuses: Record<string, Status>) => void;
+    selectedStatus: SelectedStatus | undefined;
+    selectStatus: (status: SelectedStatus | undefined) => void;
     cleanAllDelayed: () => Promise<void>;
     cleanAllFailed: () => Promise<void>;
     cleanAllCompleted: () => Promise<void>;

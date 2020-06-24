@@ -8,8 +8,8 @@ import { useStore } from './hooks/useStore'
 export const App = ({ basePath }: { basePath: string }) => {
   const {
     state,
-    selectedStatuses,
-    setSelectedStatuses,
+    selectedStatus,
+    setSelectedStatus,
     promoteJob,
     retryJob,
     retryAll,
@@ -36,8 +36,8 @@ export const App = ({ basePath }: { basePath: string }) => {
               <QueueElement
                 queue={queue}
                 key={queue.name}
-                selectedStatus={selectedStatuses[queue.name]}
-                selectStatus={setSelectedStatuses}
+                selectedStatus={selectedStatus}
+                selectStatus={setSelectedStatus}
                 promoteJob={promoteJob(queue.name)}
                 retryJob={retryJob(queue.name)}
                 retryAll={retryAll(queue.name)}

@@ -6,7 +6,7 @@ declare type State = {
     data: null | api.GetQueues;
     loading: boolean;
 };
-declare type SelectedStatuses = Record<AppQueue['name'], Status>;
+export declare type SelectedStatus = [AppQueue['name'], Status];
 export interface Store {
     state: State;
     promoteJob: (queueName: string) => (job: AppJob) => () => Promise<void>;
@@ -15,8 +15,8 @@ export interface Store {
     cleanAllDelayed: (queueName: string) => () => Promise<void>;
     cleanAllFailed: (queueName: string) => () => Promise<void>;
     cleanAllCompleted: (queueName: string) => () => Promise<void>;
-    selectedStatuses: SelectedStatuses;
-    setSelectedStatuses: React.Dispatch<React.SetStateAction<SelectedStatuses>>;
+    selectedStatus: SelectedStatus | undefined;
+    setSelectedStatus: React.Dispatch<React.SetStateAction<SelectedStatus | undefined>>;
 }
 export declare const useStore: (basePath: string) => Store;
 export {};

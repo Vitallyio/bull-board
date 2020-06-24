@@ -5,13 +5,13 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const react_1 = require("react");
 const querystring_1 = __importDefault(require("querystring"));
-const interval = 5000;
+const interval = 2500;
 exports.useStore = (basePath) => {
     const [state, setState] = react_1.useState({
         data: null,
         loading: true,
     });
-    const [selectedStatuses, setSelectedStatuses] = react_1.useState({});
+    const [selectedStatus, setSelectedStatus] = react_1.useState(undefined);
     const poll = react_1.useRef(undefined);
     const stopPolling = () => {
         if (poll.current) {
@@ -23,7 +23,7 @@ exports.useStore = (basePath) => {
         stopPolling();
         runPolling();
         return stopPolling;
-    }, [selectedStatuses]);
+    }, [selectedStatus]);
     const runPolling = () => {
         update()
             // eslint-disable-next-line no-console
@@ -33,9 +33,14 @@ exports.useStore = (basePath) => {
             poll.current = timeoutId;
         });
     };
-    const update = () => fetch(`${basePath}/queues/?${querystring_1.default.encode(selectedStatuses)}`)
-        .then(res => (res.ok ? res.json() : Promise.reject(res)))
-        .then(data => setState({ data, loading: false }));
+    const update = () => {
+        const urlParam = selectedStatus != null
+            ? querystring_1.default.encode({ [selectedStatus[0]]: selectedStatus[1] })
+            : '';
+        return fetch(`${basePath}/queues/?${urlParam}`)
+            .then(res => (res.ok ? res.json() : Promise.reject(res)))
+            .then(data => setState({ data, loading: false }));
+    };
     const promoteJob = (queueName) => (job) => () => fetch(`${basePath}/queues/${encodeURIComponent(queueName)}/${job.id}/promote`, {
         method: 'put',
     }).then(update);
@@ -62,8 +67,8 @@ exports.useStore = (basePath) => {
         cleanAllDelayed,
         cleanAllFailed,
         cleanAllCompleted,
-        selectedStatuses,
-        setSelectedStatuses,
+        selectedStatus,
+        setSelectedStatus,
     };
 };
 //# sourceMappingURL=useStore.js.map

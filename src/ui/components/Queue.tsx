@@ -1,7 +1,7 @@
 import React from 'react'
-
 import { STATUSES, Status } from './constants'
 import { AppQueue, AppJob } from '../../@types/app'
+import { SelectedStatus } from '../components/hooks/useStore'
 import { Jobs } from './Jobs'
 
 type MenuItemProps = {
@@ -74,8 +74,8 @@ const QueueActions = ({
 
 interface QueueProps {
   queue: AppQueue
-  selectedStatus: Status
-  selectStatus: (statuses: Record<string, Status>) => void
+  selectedStatus: SelectedStatus | undefined
+  selectStatus: (status: SelectedStatus | undefined) => void
   cleanAllDelayed: () => Promise<void>
   cleanAllFailed: () => Promise<void>
   cleanAllCompleted: () => Promise<void>
@@ -98,37 +98,56 @@ export const Queue = ({
   promoteJob,
   selectedStatus,
   selectStatus,
-}: QueueProps) => (
-  <section>
-    <h3>{queue.name}</h3>
-    <div className="menu-list">
-      {keysOf(STATUSES).map(status => (
-        <MenuItem
-          key={`${queue.name}-${status}`}
-          status={status}
-          count={queue.counts[status]}
-          onClick={() => selectStatus({ [queue.name]: status })}
-          selected={selectedStatus === status}
-        />
-      ))}
-    </div>
-    {selectedStatus && (
-      <>
-        <QueueActions
-          retryAll={retryAll}
-          cleanAllDelayed={cleanAllDelayed}
-          cleanAllFailed={cleanAllFailed}
-          cleanAllCompleted={cleanAllCompleted}
-          queue={queue}
-          status={selectedStatus}
-        />
-        <Jobs
-          retryJob={retryJob}
-          promoteJob={promoteJob}
-          queue={queue}
-          status={selectedStatus}
-        />
-      </>
-    )}
-  </section>
-)
+}: QueueProps) => {
+  const currentJobSelected =
+    selectedStatus != null && selectedStatus[0] === queue.name
+  return (
+    <section>
+      <h3>{queue.name}</h3>
+      <div className="menu-list">
+        {keysOf(STATUSES).map(status => (
+          <MenuItem
+            key={`${queue.name}-${status}`}
+            status={status}
+            count={queue.counts[status]}
+            onClick={() => {
+              // Clear status if currently expanded
+              if (
+                selectedStatus &&
+                queue.name === selectedStatus[0] &&
+                status === selectedStatus[1]
+              ) {
+                selectStatus(undefined)
+              } else {
+                selectStatus([queue.name, status])
+              }
+            }}
+            selected={
+              currentJobSelected &&
+              selectedStatus != null &&
+              selectedStatus[1] === status
+            }
+          />
+        ))}
+      </div>
+      {currentJobSelected && selectedStatus && (
+        <>
+          <QueueActions
+            retryAll={retryAll}
+            cleanAllDelayed={cleanAllDelayed}
+            cleanAllFailed={cleanAllFailed}
+            cleanAllCompleted={cleanAllCompleted}
+            queue={queue}
+            status={selectedStatus[1]}
+          />
+          <Jobs
+            retryJob={retryJob}
+            promoteJob={promoteJob}
+            queue={queue}
+            status={selectedStatus[1]}
+          />
+        </>
+      )}
+    </section>
+  )
+}

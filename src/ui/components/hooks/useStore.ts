@@ -4,14 +4,14 @@ import { Status } from '../constants'
 import * as api from '../../../@types/api'
 import { AppQueue, AppJob } from '../../../@types/app'
 
-const interval = 5000
+const interval = 2500
 
 type State = {
   data: null | api.GetQueues
   loading: boolean
 }
 
-type SelectedStatuses = Record<AppQueue['name'], Status>
+export type SelectedStatus = [AppQueue['name'], Status]
 
 export interface Store {
   state: State
@@ -21,8 +21,10 @@ export interface Store {
   cleanAllDelayed: (queueName: string) => () => Promise<void>
   cleanAllFailed: (queueName: string) => () => Promise<void>
   cleanAllCompleted: (queueName: string) => () => Promise<void>
-  selectedStatuses: SelectedStatuses
-  setSelectedStatuses: React.Dispatch<React.SetStateAction<SelectedStatuses>>
+  selectedStatus: SelectedStatus | undefined
+  setSelectedStatus: React.Dispatch<
+    React.SetStateAction<SelectedStatus | undefined>
+  >
 }
 
 export const useStore = (basePath: string): Store => {
@@ -30,8 +32,8 @@ export const useStore = (basePath: string): Store => {
     data: null,
     loading: true,
   } as State)
-  const [selectedStatuses, setSelectedStatuses] = useState(
-    {} as SelectedStatuses,
+  const [selectedStatus, setSelectedStatus] = useState(
+    undefined as SelectedStatus | undefined,
   )
 
   const poll = useRef(undefined as undefined | NodeJS.Timeout)
@@ -47,7 +49,7 @@ export const useStore = (basePath: string): Store => {
     runPolling()
 
     return stopPolling
-  }, [selectedStatuses])
+  }, [selectedStatus])
 
   const runPolling = () => {
     update()
@@ -59,10 +61,15 @@ export const useStore = (basePath: string): Store => {
       })
   }
 
-  const update = () =>
-    fetch(`${basePath}/queues/?${qs.encode(selectedStatuses)}`)
+  const update = () => {
+    const urlParam =
+      selectedStatus != null
+        ? qs.encode({ [selectedStatus[0]]: selectedStatus[1] })
+        : ''
+    return fetch(`${basePath}/queues/?${urlParam}`)
       .then(res => (res.ok ? res.json() : Promise.reject(res)))
       .then(data => setState({ data, loading: false }))
+  }
 
   const promoteJob = (queueName: string) => (job: AppJob) => () =>
     fetch(
@@ -111,7 +118,7 @@ export const useStore = (basePath: string): Store => {
     cleanAllDelayed,
     cleanAllFailed,
     cleanAllCompleted,
-    selectedStatuses,
-    setSelectedStatuses,
+    selectedStatus,
+    setSelectedStatus,
   }
 }
