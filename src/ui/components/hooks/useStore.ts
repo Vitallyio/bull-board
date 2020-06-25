@@ -21,6 +21,7 @@ export interface Store {
   cleanAllDelayed: (queueName: string) => () => Promise<void>
   cleanAllFailed: (queueName: string) => () => Promise<void>
   cleanAllCompleted: (queueName: string) => () => Promise<void>
+  cleanAllWaiting: (queueName: string) => () => Promise<void>
   selectedStatus: SelectedStatus | undefined
   setSelectedStatus: React.Dispatch<
     React.SetStateAction<SelectedStatus | undefined>
@@ -110,6 +111,11 @@ export const useStore = (basePath: string): Store => {
       },
     ).then(update)
 
+  const cleanAllWaiting = (queueName: string) => () =>
+    fetch(`${basePath}/queues/${encodeURIComponent(queueName)}/clean/waiting`, {
+      method: 'put',
+    }).then(update)
+
   return {
     state,
     promoteJob,
@@ -118,6 +124,7 @@ export const useStore = (basePath: string): Store => {
     cleanAllDelayed,
     cleanAllFailed,
     cleanAllCompleted,
+    cleanAllWaiting,
     selectedStatus,
     setSelectedStatus,
   }

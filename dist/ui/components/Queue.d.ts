@@ -8,9 +8,10 @@ interface QueueProps {
     cleanAllDelayed: () => Promise<void>;
     cleanAllFailed: () => Promise<void>;
     cleanAllCompleted: () => Promise<void>;
+    cleanAllWaiting: () => Promise<void>;
     retryAll: () => Promise<void>;
     retryJob: (job: AppJob) => () => Promise<void>;
     promoteJob: (job: AppJob) => () => Promise<void>;
 }
-export declare const Queue: ({ cleanAllDelayed, cleanAllFailed, cleanAllCompleted, queue, retryAll, retryJob, promoteJob, selectedStatus, selectStatus, }: QueueProps) => JSX.Element;
+export declare const Queue: ({ cleanAllDelayed, cleanAllFailed, cleanAllCompleted, cleanAllWaiting, queue, retryAll, retryJob, promoteJob, selectedStatus, selectStatus, }: QueueProps) => JSX.Element;
 export {};

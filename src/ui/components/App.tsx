@@ -16,6 +16,7 @@ export const App = ({ basePath }: { basePath: string }) => {
     cleanAllDelayed,
     cleanAllFailed,
     cleanAllCompleted,
+    cleanAllWaiting,
   } = useStore(basePath)
 
   return (
@@ -44,6 +45,7 @@ export const App = ({ basePath }: { basePath: string }) => {
                 cleanAllDelayed={cleanAllDelayed(queue.name)}
                 cleanAllFailed={cleanAllFailed(queue.name)}
                 cleanAllCompleted={cleanAllCompleted(queue.name)}
+                cleanAllWaiting={cleanAllWaiting(queue.name)}
               />
             ))}
           </>

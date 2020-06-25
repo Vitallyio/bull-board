@@ -33,14 +33,18 @@ const fieldComponents = {
             case 'object':
                 return (react_1.default.createElement(react_highlight_1.default, { className: "json" }, JSON.stringify(job.progress, null, 2)));
             case 'number':
-                if (job.progress > 100) {
-                    return react_1.default.createElement("div", { className: "progress-wrapper" }, job.progress);
+                const integerProgress = job.progress * 100;
+                const formattedProgress = integerProgress.toFixed(2);
+                if (integerProgress > 100) {
+                    return react_1.default.createElement("div", { className: "progress-wrapper" },
+                        formattedProgress,
+                        "%");
                 }
                 return (react_1.default.createElement("div", { className: "progress-wrapper" },
                     react_1.default.createElement("div", { className: "progress-bar", style: {
-                            width: `${job.progress}%`,
+                            width: `${integerProgress}%`,
                         } },
-                        job.progress,
+                        formattedProgress,
                         "%\u00A0")));
             default:
                 return react_1.default.createElement(react_1.default.Fragment, null, "--");

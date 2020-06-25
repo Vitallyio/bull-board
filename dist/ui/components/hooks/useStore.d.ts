@@ -15,6 +15,7 @@ export interface Store {
     cleanAllDelayed: (queueName: string) => () => Promise<void>;
     cleanAllFailed: (queueName: string) => () => Promise<void>;
     cleanAllCompleted: (queueName: string) => () => Promise<void>;
+    cleanAllWaiting: (queueName: string) => () => Promise<void>;
     selectedStatus: SelectedStatus | undefined;
     setSelectedStatus: React.Dispatch<React.SetStateAction<SelectedStatus | undefined>>;
 }

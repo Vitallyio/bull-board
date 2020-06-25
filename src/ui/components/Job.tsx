@@ -44,8 +44,10 @@ const fieldComponents: Record<Field, React.FC<FieldProps>> = {
           </Highlight>
         )
       case 'number':
-        if (job.progress > 100) {
-          return <div className="progress-wrapper">{job.progress}</div>
+        const integerProgress = job.progress * 100
+        const formattedProgress = integerProgress.toFixed(2)
+        if (integerProgress > 100) {
+          return <div className="progress-wrapper">{formattedProgress}%</div>
         }
 
         return (
@@ -53,10 +55,10 @@ const fieldComponents: Record<Field, React.FC<FieldProps>> = {
             <div
               className="progress-bar"
               style={{
-                width: `${job.progress}%`,
+                width: `${integerProgress}%`,
               }}
             >
-              {job.progress}
+              {formattedProgress}
               %&nbsp;
             </div>
           </div>

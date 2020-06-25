@@ -21,7 +21,12 @@ const MenuItem = ({ status, count, onClick, selected }: MenuItemProps) => (
     {status !== 'latest' && <b className="count">{count}</b>} {status}
   </div>
 )
-const ACTIONABLE_STATUSES = ['failed', 'delayed', 'completed']
+const ACTIONABLE_STATUSES: Array<Status> = [
+  'failed',
+  'delayed',
+  'completed',
+  'waiting',
+]
 
 interface QueueActionProps {
   queue: QueueProps['queue']
@@ -29,6 +34,7 @@ interface QueueActionProps {
   cleanAllFailed: QueueProps['cleanAllFailed']
   cleanAllDelayed: QueueProps['cleanAllDelayed']
   cleanAllCompleted: QueueProps['cleanAllCompleted']
+  cleanAllWaiting: QueueProps['cleanAllWaiting']
   status: Status
 }
 
@@ -41,6 +47,7 @@ const QueueActions = ({
   cleanAllFailed,
   cleanAllDelayed,
   cleanAllCompleted,
+  cleanAllWaiting,
 }: QueueActionProps) => {
   if (!isStatusActionable(status)) {
     return <div />
@@ -68,6 +75,11 @@ const QueueActions = ({
           Clean all
         </button>
       )}
+      {status === 'waiting' && (
+        <button style={{ margin: 10 }} onClick={cleanAllWaiting}>
+          Clean all
+        </button>
+      )}
     </div>
   )
 }
@@ -79,6 +91,7 @@ interface QueueProps {
   cleanAllDelayed: () => Promise<void>
   cleanAllFailed: () => Promise<void>
   cleanAllCompleted: () => Promise<void>
+  cleanAllWaiting: () => Promise<void>
   retryAll: () => Promise<void>
   retryJob: (job: AppJob) => () => Promise<void>
   promoteJob: (job: AppJob) => () => Promise<void>
@@ -92,6 +105,7 @@ export const Queue = ({
   cleanAllDelayed,
   cleanAllFailed,
   cleanAllCompleted,
+  cleanAllWaiting,
   queue,
   retryAll,
   retryJob,
@@ -137,6 +151,7 @@ export const Queue = ({
             cleanAllDelayed={cleanAllDelayed}
             cleanAllFailed={cleanAllFailed}
             cleanAllCompleted={cleanAllCompleted}
+            cleanAllWaiting={cleanAllWaiting}
             queue={queue}
             status={selectedStatus[1]}
           />

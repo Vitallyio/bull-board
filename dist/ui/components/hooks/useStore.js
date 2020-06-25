@@ -59,6 +59,9 @@ exports.useStore = (basePath) => {
     const cleanAllCompleted = (queueName) => () => fetch(`${basePath}/queues/${encodeURIComponent(queueName)}/clean/completed`, {
         method: 'put',
     }).then(update);
+    const cleanAllWaiting = (queueName) => () => fetch(`${basePath}/queues/${encodeURIComponent(queueName)}/clean/waiting`, {
+        method: 'put',
+    }).then(update);
     return {
         state,
         promoteJob,
@@ -67,6 +70,7 @@ exports.useStore = (basePath) => {
         cleanAllDelayed,
         cleanAllFailed,
         cleanAllCompleted,
+        cleanAllWaiting,
         selectedStatus,
         setSelectedStatus,
     };
