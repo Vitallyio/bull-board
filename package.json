@@ -48,6 +48,7 @@
     "date-fns": "2.14.0",
     "ejs": "3.0.1",
     "express": "4.17.1",
+    "hookrouter": "1.2.3",
     "pretty-bytes": "5.3.0",
     "react": "16.13.0",
     "react-dom": "16.13.0",
@@ -56,6 +57,7 @@
     "snyk": "^1.316.1"
   },
   "devDependencies": {
+    "@types/hookrouter": "2.2.3",
     "@types/jest": "^24.9.0",
     "@types/node": "^13.1.8",
     "@types/pretty-bytes": "^5.2.0",

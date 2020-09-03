@@ -53,7 +53,7 @@ a {
 
 #header {
   z-index: 99;
-  position: fixed;
+  position: sticky;
   top: 0;
   width: 100%;
   background: white;
@@ -65,10 +65,6 @@ a {
   padding: 0 40px;
   box-sizing: border-box;
   font-size: 18px;
-}
-
-#header + main {
-  padding-top: 100px;
 }
 
 table {

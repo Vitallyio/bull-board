@@ -8,6 +8,6 @@ const useScrolled_1 = require("./hooks/useScrolled");
 exports.Header = () => {
     const scrolled = useScrolled_1.useScrolled();
     return (react_1.default.createElement("nav", { id: "header", style: { boxShadow: scrolled ? '0 3px 3px rgba(0,0,0,0.1)' : 'none' } },
-        react_1.default.createElement("span", null, "\uD83C\uDFAF Bull Dashboard")));
+        react_1.default.createElement("span", null, "\uD83C\uDFAF Bull Dashboardzzzzzzz")));
 };
 //# sourceMappingURL=Header.js.map

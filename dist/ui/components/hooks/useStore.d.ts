@@ -5,10 +5,12 @@ import { AppQueue, AppJob } from '../../../@types/app';
 declare type State = {
     data: null | api.GetQueues;
     loading: boolean;
+    search: string | undefined;
 };
 export declare type SelectedStatus = [AppQueue['name'], Status];
 export interface Store {
     state: State;
+    setSearch: (search: string) => void;
     promoteJob: (queueName: string) => (job: AppJob) => () => Promise<void>;
     retryJob: (queueName: string) => (job: AppJob) => () => Promise<void>;
     retryAll: (queueName: string) => () => Promise<void>;
