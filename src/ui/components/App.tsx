@@ -1,9 +1,10 @@
-import React, { useEffect } from 'react'
+import React from 'react'
 
 import { Queue as QueueElement } from './Queue'
 import { RedisStats } from './RedisStats'
 import { Header } from './Header'
 import { useStore } from './hooks/useStore'
+import { useSearch } from './hooks/useSearch'
 
 export const escapeRegExp = (text: string) => {
   return text.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, '\\$&')
@@ -23,27 +24,7 @@ export const App = ({ basePath }: { basePath: string }) => {
     cleanAllWaiting,
   } = useStore(basePath)
 
-  useEffect(() => {
-    let dirty = false
-    const params = new URLSearchParams(document.location.search)
-    if (state.search) {
-      if (params.get('search') !== state.search) {
-        params.set('search', state.search)
-        dirty = true
-      }
-    } else {
-      if (params.get('search') != null) {
-        params.delete('search')
-        dirty = true
-      }
-    }
-    if (dirty) {
-      const next = new URL(document.location.toString())
-      next.search = params.toString()
-      const nexturl = next.toString()
-      window.history.pushState({ path: nexturl }, '', nexturl);
-    }
-  })
+  useSearch(state)
 
   const regex = state.search
     ? new RegExp(escapeRegExp(state.search), 'i')

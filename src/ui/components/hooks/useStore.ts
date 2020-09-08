@@ -6,7 +6,7 @@ import { AppQueue, AppJob } from '../../../@types/app'
 
 const interval = 2500
 
-type State = {
+export type State = {
   data: null | api.GetQueues
   loading: boolean
   search: string | undefined

@@ -2,7 +2,7 @@
 import { Status } from '../constants';
 import * as api from '../../../@types/api';
 import { AppQueue, AppJob } from '../../../@types/app';
-declare type State = {
+export declare type State = {
     data: null | api.GetQueues;
     loading: boolean;
     search: string | undefined;
@@ -22,4 +22,3 @@ export interface Store {
     setSelectedStatus: React.Dispatch<React.SetStateAction<SelectedStatus | undefined>>;
 }
 export declare const useStore: (basePath: string) => Store;
-export {};
