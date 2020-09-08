@@ -37,9 +37,10 @@ export const useStore = (basePath: string): Store => {
     loading: true,
     search: params.get('search') ?? undefined,
   } as State)
-  const [selectedStatus, setSelectedStatus] = useState(
-    undefined as SelectedStatus | undefined,
-  )
+  const [selectedStatus, setSelectedStatus] = useState([
+    params.get('job') ?? undefined,
+    params.get('status') ?? undefined,
+  ] as SelectedStatus | undefined)
 
   const poll = useRef(undefined as undefined | NodeJS.Timeout)
   const stopPolling = () => {

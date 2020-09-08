@@ -24,7 +24,11 @@ export const App = ({ basePath }: { basePath: string }) => {
     cleanAllWaiting,
   } = useStore(basePath)
 
-  useSearch(state)
+  useSearch({
+    search: state.search,
+    status: selectedStatus ? selectedStatus[1] : undefined,
+    job: selectedStatus ? selectedStatus[0] : undefined,
+  })
 
   const regex = state.search
     ? new RegExp(escapeRegExp(state.search), 'i')

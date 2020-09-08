@@ -1,23 +1,35 @@
-import { State } from './useStore'
 import { useEffect } from 'react'
+import { Status } from '../constants'
 
-export const useSearch = (state: State) => {
+interface StateSlice {
+  search: string | undefined
+  status: Status | undefined
+  job: string | undefined
+}
+
+const PARAMS: Array<keyof StateSlice> = ['job', 'status', 'search']
+
+export const useSearch = (state: StateSlice) => {
   useEffect(() => {
     let dirty = false
     const params = new URLSearchParams(document.location.search)
-    if (state.search) {
-      if (params.get('search') !== state.search) {
-        params.set('search', state.search)
-        dirty = true
-      }
-    } else {
-      // we force the search param to follow state, it's the responsibility
-      // of the store to
-      if (params.get('search') != null) {
-        params.delete('search')
+
+    for (const param of PARAMS) {
+      const urlValue = params.get(param)
+      const stateValue = state[param]
+      if (stateValue) {
+        if (urlValue !== stateValue) {
+          params.set(param, stateValue.toString())
+          dirty = true
+        }
+      } else if (urlValue) {
+        // we force the search param to follow state, it's the responsibility
+        // of the store to initialize from the URL
+        params.delete(param)
         dirty = true
       }
     }
+
     if (dirty) {
       const next = new URL(document.location.toString())
       next.search = params.toString()
