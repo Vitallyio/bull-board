@@ -4,9 +4,9 @@ const path = require('path')
 const webpack = require('webpack')
 
 module.exports = {
-  mode: 'production',
+  mode: process.NODE_ENV === 'production' ? 'production' : 'development',
   bail: true,
-  devtool: false,
+  devtool: process.NODE_ENV === 'production' ? false : 'inline-source-map',
   entry: ['./src/ui/index.tsx'],
   output: {
     path: path.resolve(__dirname, './static'),

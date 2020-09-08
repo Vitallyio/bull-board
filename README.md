@@ -1,3 +1,10 @@
+# fastest way to get started developing the ui
+
+- [x] have docker installed
+- in two terminal sessions/windows
+  - [x] ```start:dev``` starts docker redis and server (which serves bundle)
+  - [x] ```start:ui``` starts webpack in dev, watch modes
+
 # bull-board 🎯
 
 Bull Dashboard is a UI built on top of [Bull](https://github.com/OptimalBits/bull) to help you visualize your queues and their jobs.
