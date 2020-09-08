@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 
 import { Queue as QueueElement } from './Queue'
 import { RedisStats } from './RedisStats'
@@ -22,6 +22,28 @@ export const App = ({ basePath }: { basePath: string }) => {
     cleanAllCompleted,
     cleanAllWaiting,
   } = useStore(basePath)
+
+  useEffect(() => {
+    let dirty = false
+    const params = new URLSearchParams(document.location.search)
+    if (state.search) {
+      if (params.get('search') !== state.search) {
+        params.set('search', state.search)
+        dirty = true
+      }
+    } else {
+      if (params.get('search') != null) {
+        params.delete('search')
+        dirty = true
+      }
+    }
+    if (dirty) {
+      const next = new URL(document.location.toString())
+      next.search = params.toString()
+      const nexturl = next.toString()
+      window.history.pushState({ path: nexturl }, '', nexturl);
+    }
+  })
 
   const regex = state.search
     ? new RegExp(escapeRegExp(state.search), 'i')

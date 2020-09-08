@@ -31,10 +31,11 @@ export interface Store {
 }
 
 export const useStore = (basePath: string): Store => {
+  const params = new URLSearchParams(document.location.search)
   const [state, setState] = useState({
     data: null,
     loading: true,
-    search: undefined,
+    search: params.get('search') ?? undefined,
   } as State)
   const [selectedStatus, setSelectedStatus] = useState(
     undefined as SelectedStatus | undefined,

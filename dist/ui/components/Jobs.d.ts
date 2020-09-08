@@ -4,5 +4,5 @@ export declare const Jobs: ({ retryJob, promoteJob, queue: { jobs, name }, statu
     retryJob: (job: AppJob) => () => Promise<void>;
     promoteJob: (job: AppJob) => () => Promise<void>;
     queue: AppQueue;
-    status: "active" | "failed" | "waiting" | "paused" | "completed" | "delayed" | "latest";
+    status: "latest" | "active" | "waiting" | "completed" | "failed" | "delayed" | "paused";
 }) => JSX.Element;
