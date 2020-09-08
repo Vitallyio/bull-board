@@ -72,7 +72,11 @@ export const useStore = (basePath: string): Store => {
         : ''
     return fetch(`${basePath}/queues/?${urlParam}`)
       .then(res => (res.ok ? res.json() : Promise.reject(res)))
-      .then(data => setState({ data, loading: false, search: state.search }))
+      .then(data =>
+        setState(state => {
+          return { ...state, data, loading: false } as any
+        }),
+      )
   }
 
   const promoteJob = (queueName: string) => (job: AppJob) => () =>
