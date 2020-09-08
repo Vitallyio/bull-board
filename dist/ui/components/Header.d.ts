@@ -1,2 +1,4 @@
-/// <reference types="react" />
-export declare const Header: () => JSX.Element;
+import React from 'react';
+export declare const Header: ({ search }: {
+    search: React.ReactChild;
+}) => JSX.Element;

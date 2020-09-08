@@ -48,10 +48,14 @@ const run = () => {
   }
 
   app.use('/add', (req, res) => {
-    const opts = req.query.opts || {};
+    const opts = req.query.opts || {}
 
     exampleBull.add({ title: req.query.title }, opts)
-    queues[0].add('Add', { title: req.query.title }, opts)
+    queues[(Math.random() * queues.length) | 0].add(
+      'Add',
+      { title: req.query.title },
+      opts,
+    )
 
     res.json({
       ok: true,

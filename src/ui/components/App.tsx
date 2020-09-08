@@ -27,14 +27,15 @@ export const App = ({ basePath }: { basePath: string }) => {
     ? new RegExp(escapeRegExp(state.search), 'i')
     : undefined
 
-  console.log('wtf')
-
   return (
     <>
-      <Header />
-      <input
-        value={state.search}
-        onChange={evt => setSearch(evt.target.value)}
+      <Header
+        search={
+          <input
+            value={state.search}
+            onChange={evt => setSearch(evt.target.value)}
+          />
+        }
       />
       <main>
         {state.loading ? (

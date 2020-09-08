@@ -65,6 +65,12 @@ a {
   padding: 0 40px;
   box-sizing: border-box;
   font-size: 18px;
+
+  display: flex;
+}
+
+#header .searchContainer {
+  margin-left: auto;
 }
 
 table {

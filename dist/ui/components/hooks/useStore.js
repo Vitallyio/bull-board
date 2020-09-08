@@ -10,6 +10,7 @@ exports.useStore = (basePath) => {
     const [state, setState] = react_1.useState({
         data: null,
         loading: true,
+        search: undefined,
     });
     const [selectedStatus, setSelectedStatus] = react_1.useState(undefined);
     const poll = react_1.useRef(undefined);
@@ -39,7 +40,9 @@ exports.useStore = (basePath) => {
             : '';
         return fetch(`${basePath}/queues/?${urlParam}`)
             .then(res => (res.ok ? res.json() : Promise.reject(res)))
-            .then(data => setState({ data, loading: false }));
+            .then(data => setState(state => {
+            return { ...state, data, loading: false };
+        }));
     };
     const promoteJob = (queueName) => (job) => () => fetch(`${basePath}/queues/${encodeURIComponent(queueName)}/${job.id}/promote`, {
         method: 'put',
@@ -62,8 +65,10 @@ exports.useStore = (basePath) => {
     const cleanAllWaiting = (queueName) => () => fetch(`${basePath}/queues/${encodeURIComponent(queueName)}/clean/waiting`, {
         method: 'put',
     }).then(update);
+    const setSearch = (search) => setState({ data: state.data, loading: state.loading, search: search });
     return {
         state,
+        setSearch,
         promoteJob,
         retryJob,
         retryAll,
