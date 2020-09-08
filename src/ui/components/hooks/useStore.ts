@@ -3,6 +3,7 @@ import qs from 'querystring'
 import { Status } from '../constants'
 import * as api from '../../../@types/api'
 import { AppQueue, AppJob } from '../../../@types/app'
+import { getSearchState } from './useSearch'
 
 const interval = 2500
 
@@ -31,15 +32,15 @@ export interface Store {
 }
 
 export const useStore = (basePath: string): Store => {
-  const params = new URLSearchParams(document.location.search)
+  const params = getSearchState()
   const [state, setState] = useState({
     data: null,
     loading: true,
-    search: params.get('search') ?? undefined,
+    search: params.search,
   } as State)
   const [selectedStatus, setSelectedStatus] = useState([
-    params.get('job') ?? undefined,
-    params.get('status') ?? undefined,
+    params.job,
+    params.status,
   ] as SelectedStatus | undefined)
 
   const poll = useRef(undefined as undefined | NodeJS.Timeout)

@@ -5,4 +5,5 @@ interface StateSlice {
     job: string | undefined;
 }
 export declare const useSearch: (state: StateSlice) => void;
+export declare const getSearchState: () => StateSlice;
 export {};

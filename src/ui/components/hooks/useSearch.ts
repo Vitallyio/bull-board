@@ -38,3 +38,16 @@ export const useSearch = (state: StateSlice) => {
     }
   })
 }
+
+export const getSearchState = (): StateSlice => {
+  const returnValue: StateSlice = {
+    search: undefined,
+    status: undefined,
+    job: undefined,
+  }
+  const params = new URLSearchParams(document.location.search)
+  for (const param of PARAMS) {
+    ;(returnValue[param] as any) = params.get(param) ?? undefined
+  }
+  return returnValue
+}
