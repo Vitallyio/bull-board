@@ -9,12 +9,14 @@ const interval = 2500
 type State = {
   data: null | api.GetQueues
   loading: boolean
+  search: string | undefined
 }
 
 export type SelectedStatus = [AppQueue['name'], Status]
 
 export interface Store {
   state: State
+  setSearch: (search: string) => void
   promoteJob: (queueName: string) => (job: AppJob) => () => Promise<void>
   retryJob: (queueName: string) => (job: AppJob) => () => Promise<void>
   retryAll: (queueName: string) => () => Promise<void>
@@ -32,6 +34,7 @@ export const useStore = (basePath: string): Store => {
   const [state, setState] = useState({
     data: null,
     loading: true,
+    search: undefined,
   } as State)
   const [selectedStatus, setSelectedStatus] = useState(
     undefined as SelectedStatus | undefined,
@@ -69,7 +72,7 @@ export const useStore = (basePath: string): Store => {
         : ''
     return fetch(`${basePath}/queues/?${urlParam}`)
       .then(res => (res.ok ? res.json() : Promise.reject(res)))
-      .then(data => setState({ data, loading: false }))
+      .then(data => setState({ data, loading: false, search: state.search }))
   }
 
   const promoteJob = (queueName: string) => (job: AppJob) => () =>
@@ -116,8 +119,12 @@ export const useStore = (basePath: string): Store => {
       method: 'put',
     }).then(update)
 
+  const setSearch = (search: string) =>
+    setState({ data: state.data, loading: state.loading, search: search })
+
   return {
     state,
+    setSearch,
     promoteJob,
     retryJob,
     retryAll,
