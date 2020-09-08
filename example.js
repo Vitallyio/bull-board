@@ -18,10 +18,15 @@ const createQueueMQ = name => new QueueMQ(name, { connection: redisOptions })
 const run = () => {
   const exampleBullName = 'ExampleBull'
   const exampleBull = createQueue3(exampleBullName)
-  const exampleBullMqName = 'ExampleBullMQ'
-  const exampleBullMq = createQueueMQ(exampleBullMqName)
 
-  setQueues([exampleBullMq])
+  const queues = []
+  for (const numstr of ['one', 'two', 'three', 'four', 'five']) {
+    const exampleBullMqName = 'ExampleBullMQ-' + numstr
+    const exampleBullMq = createQueueMQ(exampleBullMqName)
+    queues.push(exampleBullMq)
+  }
+
+  setQueues(queues)
 
   exampleBull.process(async job => {
     for (let i = 0; i <= 100; i++) {
@@ -31,20 +36,22 @@ const run = () => {
     }
   })
 
-  new Worker(exampleBullMqName, async job => {
-    for (let i = 0; i <= 100; i++) {
-      await sleep(Math.random())
-      await job.updateProgress(i)
+  for (const i of [1, 2, 3, 4, 5]) {
+    new Worker(queues[i - 1].name, async job => {
+      for (let i = 0; i <= 100; i++) {
+        await sleep(Math.random())
+        await job.updateProgress(i)
 
-      if (Math.random() * 200 < 1) throw new Error(`Random error ${i}`)
-    }
-  })
+        if (Math.random() * 200 < 1) throw new Error(`Random error ${i}`)
+      }
+    })
+  }
 
   app.use('/add', (req, res) => {
     const opts = req.query.opts || {};
 
     exampleBull.add({ title: req.query.title }, opts)
-    exampleBullMq.add('Add', { title: req.query.title }, opts)
+    queues[0].add('Add', { title: req.query.title }, opts)
 
     res.json({
       ok: true,
