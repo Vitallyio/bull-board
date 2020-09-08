@@ -122,7 +122,7 @@ export const useStore = (basePath: string): Store => {
     ).then(update)
 
   const cleanAllWaiting = (queueName: string) => () =>
-    fetch(`${basePath}/queues/${encodeURIComponent(queueName)}/clean/waiting`, {
+    fetch(`${basePath}/queues/${encodeURIComponent(queueName)}/clean/wait`, {
       method: 'put',
     }).then(update)
 
