@@ -59,6 +59,13 @@ export const useStore = (basePath: string): Store => {
   }
 
   useEffect(() => {
+    // it seems like useEffect is necessary to "subscribe" to useParams
+    if (params.queue && params.status) {
+      setSelectedStatus([params.queue, params.status])
+    }
+  }, [params])
+
+  useEffect(() => {
     stopPolling()
     runPolling()
 

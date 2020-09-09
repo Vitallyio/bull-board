@@ -1,5 +1,13 @@
 /// <reference types="react" />
 import { Store } from './hooks/useStore';
-export declare const Header: ({ store }: {
+interface PassedProps {
     store: Store;
-}) => JSX.Element;
+}
+interface ConnectProps {
+}
+interface DispatchProps {
+    doThing: () => void;
+}
+declare type Props = PassedProps & ConnectProps & DispatchProps;
+export declare const Header: import("react-redux").ConnectedComponent<({ store, doThing }: Props) => JSX.Element, Pick<Props, "store"> & PassedProps>;
+export {};
