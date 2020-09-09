@@ -19,7 +19,7 @@ exports.JobList = (props) => {
     if (!name) {
         return null;
     }
-    const queue = (_a = store.state.data) === null || _a === void 0 ? void 0 : _a.queues.find(queue => queue.name === name);
+    const queue = (_a = store.state.data) === null || _a === void 0 ? void 0 : _a.queues[name];
     if (!queue) {
         throw new Error(`Couldn't find queue in store: ${name}`);
     }

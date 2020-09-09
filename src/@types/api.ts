@@ -2,5 +2,8 @@ import { ValidMetrics, AppQueue } from './app'
 
 export interface GetQueues {
   stats: Partial<ValidMetrics>
-  queues: AppQueue[]
+  queueNames: Array<string>
+  queues: {
+    [name: string]: AppQueue
+  }
 }

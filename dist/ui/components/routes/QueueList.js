@@ -13,23 +13,24 @@ exports.escapeRegExp = (text) => {
 const keysOf = (target) => Object.keys(target);
 exports.QueueList = (props) => {
     var _a;
-    const { state } = props.store;
+    const { store } = props;
+    const { state } = store;
     const regex = state.search
         ? new RegExp(exports.escapeRegExp(state.search), 'i')
         : undefined;
-    return (react_1.default.createElement(react_1.default.Fragment, null, props.store.state.loading ? ('Loading...') : (react_1.default.createElement("table", null,
+    return (react_1.default.createElement(react_1.default.Fragment, null, state.loading ? ('Loading...') : (react_1.default.createElement("table", null,
         react_1.default.createElement("thead", null,
             react_1.default.createElement("tr", null,
                 react_1.default.createElement("th", null, "name"),
                 keysOf(constants_1.STATUSES).map(status => (react_1.default.createElement("th", { key: `${status}` }, status))))),
-        react_1.default.createElement("tbody", null, (_a = props.store.state.data) === null || _a === void 0 ? void 0 : _a.queues.filter(queue => {
+        react_1.default.createElement("tbody", null, (_a = state.data) === null || _a === void 0 ? void 0 : _a.queueNames.map(name => { var _a; return (_a = state.data) === null || _a === void 0 ? void 0 : _a.queues[name]; }).filter(queue => {
             return regex ? queue.name.match(regex) : true;
         }).filter(queue => {
-            const { selectedStatus } = props.store;
+            const { selectedStatus } = store;
             if (selectedStatus === null || selectedStatus === void 0 ? void 0 : selectedStatus[0]) {
                 return queue.name === selectedStatus[0];
             }
             return true;
-        }).map(queue => (react_1.default.createElement(Queue_1.Queue, { queue: queue, key: queue.name, selectedStatus: props.store.selectedStatus, selectStatus: props.store.setSelectedStatus, promoteJob: props.store.promoteJob(queue.name), retryJob: props.store.retryJob(queue.name), retryAll: props.store.retryAll(queue.name), cleanAllDelayed: props.store.cleanAllDelayed(queue.name), cleanAllFailed: props.store.cleanAllFailed(queue.name), cleanAllCompleted: props.store.cleanAllCompleted(queue.name), cleanAllWaiting: props.store.cleanAllWaiting(queue.name) }))))))));
+        }).map(queue => (react_1.default.createElement(Queue_1.Queue, { queue: queue, key: queue.name, selectedStatus: store.selectedStatus, selectStatus: store.setSelectedStatus, promoteJob: store.promoteJob(queue.name), retryJob: store.retryJob(queue.name), retryAll: store.retryAll(queue.name), cleanAllDelayed: store.cleanAllDelayed(queue.name), cleanAllFailed: store.cleanAllFailed(queue.name), cleanAllCompleted: store.cleanAllCompleted(queue.name), cleanAllWaiting: store.cleanAllWaiting(queue.name) }))))))));
 };
 //# sourceMappingURL=QueueList.js.map

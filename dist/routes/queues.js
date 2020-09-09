@@ -54,16 +54,18 @@ const getDataForQueues = async (bullBoardQueues, req) => {
     if (pairs.length == 0) {
         return {
             stats: {},
-            queues: [],
+            queueNames: [],
+            queues: {},
         };
     }
-    const queues = await Promise.all(pairs.map(async ([name, { queue }]) => {
+    const queues = {};
+    await Promise.all(pairs.map(async ([name, { queue }]) => {
         const counts = await queue.getJobCounts(...statuses);
         const status = query[name] === 'latest' ? statuses : query[name];
         const jobs = status
             ? await queue.getJobs(status, 0, 10)
             : [];
-        return {
+        queues[name] = {
             name,
             counts: counts,
             jobs: jobs.map(formatJob),
@@ -73,6 +75,7 @@ const getDataForQueues = async (bullBoardQueues, req) => {
     return {
         stats,
         queues,
+        queueNames: pairs.map(([name]) => name),
     };
 };
 exports.queuesHandler = async (req, res) => {
