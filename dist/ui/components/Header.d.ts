@@ -1,4 +1,5 @@
-import React from 'react';
-export declare const Header: ({ search }: {
-    search: React.ReactChild;
+/// <reference types="react" />
+import { Store } from './hooks/useStore';
+export declare const Header: ({ store }: {
+    store: Store;
 }) => JSX.Element;

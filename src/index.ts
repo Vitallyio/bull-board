@@ -27,12 +27,12 @@ router.set('views', path.resolve(__dirname, '../dist/ui'))
 
 router.use('/static', express.static(path.resolve(__dirname, '../static')))
 
-router.get('/', entryPoint)
 router.get('/queues', wrapAsync(queuesHandler))
 router.put('/queues/:queueName/retry', wrapAsync(retryAll))
 router.put('/queues/:queueName/:id/retry', wrapAsync(retryJob))
 router.put('/queues/:queueName/:id/promote', wrapAsync(promoteJob))
 router.put('/queues/:queueName/clean/:queueStatus', wrapAsync(cleanAll))
+router.get('*', entryPoint)
 
 type Q = Queue | QueueMq
 

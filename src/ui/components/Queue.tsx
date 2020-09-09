@@ -3,6 +3,7 @@ import { STATUSES, Status } from './constants'
 import { AppQueue, AppJob } from '../../@types/app'
 import { SelectedStatus } from '../components/hooks/useStore'
 import { Jobs } from './Jobs'
+import { Link } from 'react-router-dom'
 
 type MenuItemProps = {
   status: Status
@@ -119,6 +120,20 @@ export const Queue = ({
     <section>
       <h3>{queue.name}</h3>
       <div className="menu-list">
+        {keysOf(STATUSES).map(status => (
+          <div key={status}>
+            <Link
+              to={{
+                pathname: `/bull-board/${encodeURIComponent(
+                  queue.name,
+                )}/${status}`,
+                // search: "?sort=name",
+              }}
+            >
+              {status}
+            </Link>
+          </div>
+        ))}
         {keysOf(STATUSES).map(status => (
           <MenuItem
             key={`${queue.name}-${status}`}

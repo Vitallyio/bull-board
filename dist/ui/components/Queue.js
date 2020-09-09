@@ -6,6 +6,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const react_1 = __importDefault(require("react"));
 const constants_1 = require("./constants");
 const Jobs_1 = require("./Jobs");
+const react_router_dom_1 = require("react-router-dom");
 const MenuItem = ({ status, count, onClick, selected }) => (react_1.default.createElement("div", { className: `menu-item ${status} ${selected ? 'selected' : ''} ${count === 0 ? 'off' : 'on'}`, onClick: onClick },
     status !== 'latest' && react_1.default.createElement("b", { className: "count" }, count),
     " ",
@@ -35,19 +36,24 @@ exports.Queue = ({ cleanAllDelayed, cleanAllFailed, cleanAllCompleted, cleanAllW
     const currentJobSelected = selectedStatus != null && selectedStatus[0] === queue.name;
     return (react_1.default.createElement("section", null,
         react_1.default.createElement("h3", null, queue.name),
-        react_1.default.createElement("div", { className: "menu-list" }, keysOf(constants_1.STATUSES).map(status => (react_1.default.createElement(MenuItem, { key: `${queue.name}-${status}`, status: status, count: queue.counts[status], onClick: () => {
-                // Clear status if currently expanded
-                if (selectedStatus &&
-                    queue.name === selectedStatus[0] &&
-                    status === selectedStatus[1]) {
-                    selectStatus(undefined);
-                }
-                else {
-                    selectStatus([queue.name, status]);
-                }
-            }, selected: currentJobSelected &&
-                selectedStatus != null &&
-                selectedStatus[1] === status })))),
+        react_1.default.createElement("div", { className: "menu-list" },
+            keysOf(constants_1.STATUSES).map(status => (react_1.default.createElement("div", { key: status },
+                react_1.default.createElement(react_router_dom_1.Link, { to: {
+                        pathname: `/bull-board/${encodeURIComponent(queue.name)}/${status}`,
+                    } }, status)))),
+            keysOf(constants_1.STATUSES).map(status => (react_1.default.createElement(MenuItem, { key: `${queue.name}-${status}`, status: status, count: queue.counts[status], onClick: () => {
+                    // Clear status if currently expanded
+                    if (selectedStatus &&
+                        queue.name === selectedStatus[0] &&
+                        status === selectedStatus[1]) {
+                        selectStatus(undefined);
+                    }
+                    else {
+                        selectStatus([queue.name, status]);
+                    }
+                }, selected: currentJobSelected &&
+                    selectedStatus != null &&
+                    selectedStatus[1] === status })))),
         currentJobSelected && selectedStatus && (react_1.default.createElement(react_1.default.Fragment, null,
             react_1.default.createElement(QueueActions, { retryAll: retryAll, cleanAllDelayed: cleanAllDelayed, cleanAllFailed: cleanAllFailed, cleanAllCompleted: cleanAllCompleted, cleanAllWaiting: cleanAllWaiting, queue: queue, status: selectedStatus[1] }),
             react_1.default.createElement(Jobs_1.Jobs, { retryJob: retryJob, promoteJob: promoteJob, queue: queue, status: selectedStatus[1] })))));
