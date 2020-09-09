@@ -27,31 +27,35 @@ export const QueueList = (props: QueueListProps) => {
         'Loading...'
       ) : (
         <table>
-          <tr>
-            <td>name</td>
-            {keysOf(STATUSES).map(status => (
-              <td key={`${status}`}>{status}</td>
-            ))}
-          </tr>
-          {props.store.state.data?.queues
-            .filter(queue => {
-              return regex ? queue.name.match(regex) : true
-            })
-            .map(queue => (
-              <QueueElement
-                queue={queue}
-                key={queue.name}
-                selectedStatus={props.store.selectedStatus}
-                selectStatus={props.store.setSelectedStatus}
-                promoteJob={props.store.promoteJob(queue.name)}
-                retryJob={props.store.retryJob(queue.name)}
-                retryAll={props.store.retryAll(queue.name)}
-                cleanAllDelayed={props.store.cleanAllDelayed(queue.name)}
-                cleanAllFailed={props.store.cleanAllFailed(queue.name)}
-                cleanAllCompleted={props.store.cleanAllCompleted(queue.name)}
-                cleanAllWaiting={props.store.cleanAllWaiting(queue.name)}
-              />
-            ))}
+          <thead>
+            <tr>
+              <th>name</th>
+              {keysOf(STATUSES).map(status => (
+                <th key={`${status}`}>{status}</th>
+              ))}
+            </tr>
+          </thead>
+          <tbody>
+            {props.store.state.data?.queues
+              .filter(queue => {
+                return regex ? queue.name.match(regex) : true
+              })
+              .map(queue => (
+                <QueueElement
+                  queue={queue}
+                  key={queue.name}
+                  selectedStatus={props.store.selectedStatus}
+                  selectStatus={props.store.setSelectedStatus}
+                  promoteJob={props.store.promoteJob(queue.name)}
+                  retryJob={props.store.retryJob(queue.name)}
+                  retryAll={props.store.retryAll(queue.name)}
+                  cleanAllDelayed={props.store.cleanAllDelayed(queue.name)}
+                  cleanAllFailed={props.store.cleanAllFailed(queue.name)}
+                  cleanAllCompleted={props.store.cleanAllCompleted(queue.name)}
+                  cleanAllWaiting={props.store.cleanAllWaiting(queue.name)}
+                />
+              ))}
+          </tbody>
         </table>
       )}
     </>

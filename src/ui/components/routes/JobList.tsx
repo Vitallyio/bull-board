@@ -1,6 +1,7 @@
 import React from 'react'
 import { Store } from '../hooks/useStore'
 import { Jobs } from '../Jobs'
+import { QueueActions } from '../QueueActions'
 import { useParams } from 'react-router-dom'
 
 interface JobListProps {
@@ -22,11 +23,22 @@ export const JobList = (props: JobListProps) => {
   }
 
   return (
-    <Jobs
-      retryJob={store.retryJob(name)}
-      promoteJob={store.promoteJob(name)}
-      queue={queue}
-      status={status}
-    />
+    <>
+      <QueueActions
+        retryAll={store.retryAll(queue.name)}
+        cleanAllDelayed={store.cleanAllDelayed(queue.name)}
+        cleanAllFailed={store.cleanAllFailed(queue.name)}
+        cleanAllCompleted={store.cleanAllCompleted(queue.name)}
+        cleanAllWaiting={store.cleanAllWaiting(queue.name)}
+        queue={queue}
+        status={store.selectedStatus?.[1] ?? 'latest'}
+      />
+      <Jobs
+        retryJob={store.retryJob(name)}
+        promoteJob={store.promoteJob(name)}
+        queue={queue}
+        status={status}
+      />
+    </>
   )
 }

@@ -3,9 +3,15 @@ import qs from 'querystring'
 import { Status } from '../constants'
 import * as api from '../../../@types/api'
 import { AppQueue, AppJob } from '../../../@types/app'
-import { getSearchState } from './useSearch'
+import { useParams } from 'react-router-dom'
 
 const interval = 2500
+
+interface RouteParams {
+  queue?: string
+  status?: Status
+  search?: string
+}
 
 export type State = {
   data: null | api.GetQueues
@@ -17,6 +23,7 @@ export type SelectedStatus = [AppQueue['name'], Status]
 
 export interface Store {
   state: State
+  params: RouteParams
   setSearch: (search: string) => void
   promoteJob: (queueName: string) => (job: AppJob) => () => Promise<void>
   retryJob: (queueName: string) => (job: AppJob) => () => Promise<void>
@@ -32,14 +39,14 @@ export interface Store {
 }
 
 export const useStore = (basePath: string): Store => {
-  const params = getSearchState()
+  const params = useParams<RouteParams>()
   const [state, setState] = useState({
     data: null,
     loading: true,
     search: params.search,
   } as State)
   const [selectedStatus, setSelectedStatus] = useState([
-    params.job,
+    params.queue,
     params.status,
   ] as SelectedStatus | undefined)
 
@@ -131,6 +138,7 @@ export const useStore = (basePath: string): Store => {
 
   return {
     state,
+    params,
     setSearch,
     promoteJob,
     retryJob,

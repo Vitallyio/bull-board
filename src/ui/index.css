@@ -73,6 +73,11 @@ a {
   margin-left: auto;
 }
 
+#header .headerLink {
+  text-decoration: none;
+  color: black;
+}
+
 table {
   width: 100%;
   padding: 40px;

@@ -13,5 +13,5 @@ interface QueueProps {
     retryJob: (job: AppJob) => () => Promise<void>;
     promoteJob: (job: AppJob) => () => Promise<void>;
 }
-export declare const Queue: ({ cleanAllDelayed, cleanAllFailed, cleanAllCompleted, cleanAllWaiting, queue, retryAll, retryJob, promoteJob, selectedStatus, selectStatus, }: QueueProps) => JSX.Element;
+export declare const Queue: ({ queue, selectedStatus, selectStatus }: QueueProps) => JSX.Element;
 export {};
