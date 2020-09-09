@@ -40,6 +40,13 @@ export const QueueList = (props: QueueListProps) => {
               .filter(queue => {
                 return regex ? queue.name.match(regex) : true
               })
+              .filter(queue => {
+                const { selectedStatus } = props.store
+                if (selectedStatus?.[0]) {
+                  return queue.name === selectedStatus[0]
+                }
+                return true
+              })
               .map(queue => (
                 <QueueElement
                   queue={queue}

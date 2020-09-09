@@ -1,9 +1,10 @@
-import { useEffect, useRef, useState } from 'react'
+import { useState, useEffect } from 'react'
 import qs from 'querystring'
 import { Status } from '../constants'
 import * as api from '../../../@types/api'
 import { AppQueue, AppJob } from '../../../@types/app'
 import { useParams } from 'react-router-dom'
+import { useInterval } from './useInterval'
 
 const interval = 2500
 
@@ -50,37 +51,16 @@ export const useStore = (basePath: string): Store => {
     params.status,
   ] as SelectedStatus | undefined)
 
-  const poll = useRef(undefined as undefined | NodeJS.Timeout)
-  const stopPolling = () => {
-    if (poll.current) {
-      clearTimeout(poll.current)
-      poll.current = undefined
-    }
-  }
-
   useEffect(() => {
     // it seems like useEffect is necessary to "subscribe" to useParams
     if (params.queue && params.status) {
       setSelectedStatus([params.queue, params.status])
+    } else {
+      setSelectedStatus(undefined)
     }
   }, [params])
 
-  useEffect(() => {
-    stopPolling()
-    runPolling()
-
-    return stopPolling
-  }, [selectedStatus])
-
-  const runPolling = () => {
-    update()
-      // eslint-disable-next-line no-console
-      .catch(error => console.error('Failed to poll', error))
-      .then(() => {
-        const timeoutId = setTimeout(runPolling, interval)
-        poll.current = timeoutId
-      })
-  }
+  useInterval(() => update(), interval)
 
   const update = () => {
     const urlParam =

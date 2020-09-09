@@ -2,7 +2,6 @@ import React from 'react'
 import { Store } from '../hooks/useStore'
 import { Jobs } from '../Jobs'
 import { QueueActions } from '../QueueActions'
-import { useParams } from 'react-router-dom'
 
 interface JobListProps {
   store: Store
@@ -10,14 +9,21 @@ interface JobListProps {
 
 export const JobList = (props: JobListProps) => {
   const { store } = props
-  const { queue: name, status } = useParams()
 
   if (!store.state.data) {
     return null
   }
 
-  const queue = store.state.data?.queues.find(queue => queue.name === name)
+  if (!store.selectedStatus) {
+    return null
+  }
 
+  const [name, status] = store.selectedStatus
+  if (!name) {
+    return null
+  }
+
+  const queue = store.state.data?.queues.find(queue => queue.name === name)
   if (!queue) {
     throw new Error(`Couldn't find queue in store: ${name}`)
   }
@@ -31,7 +37,7 @@ export const JobList = (props: JobListProps) => {
         cleanAllCompleted={store.cleanAllCompleted(queue.name)}
         cleanAllWaiting={store.cleanAllWaiting(queue.name)}
         queue={queue}
-        status={store.selectedStatus?.[1] ?? 'latest'}
+        status={status ?? 'latest'}
       />
       <Jobs
         retryJob={store.retryJob(name)}

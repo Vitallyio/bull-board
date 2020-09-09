@@ -26,11 +26,8 @@ export const AppInner = ({ basePath }: { basePath: string }) => {
   return (
     <>
       <Header store={store} />
-      {store.params.queue ? (
-        <JobList store={store} />
-      ) : (
-        <QueueList store={store} />
-      )}
+      <QueueList store={store} />
+      {store.selectedStatus && <JobList store={store} />}
     </>
   )
 }
