@@ -48,11 +48,10 @@ export const useStore = (basePath: string): Store => {
   } as State)
   const [selectedStatus, setSelectedStatus] = useState([
     params.queue,
-    params.status,
+    params.status ?? 'latest',
   ] as SelectedStatus | undefined)
 
   useEffect(() => {
-    // it seems like useEffect is necessary to "subscribe" to useParams
     if (params.queue && params.status) {
       setSelectedStatus([params.queue, params.status])
     } else {
@@ -60,7 +59,11 @@ export const useStore = (basePath: string): Store => {
     }
   }, [params])
 
-  useInterval(() => update(), interval)
+  useEffect(() => {
+    update().catch(console.error)
+  }, [selectedStatus])
+
+  useInterval(() => update().catch(console.error), interval)
 
   const update = () => {
     const urlParam =
