@@ -51,14 +51,16 @@ export const useStore = (basePath: string): Store => {
     params.status ?? 'latest',
   ] as SelectedStatus | undefined)
 
+  // route params change -> update state
   useEffect(() => {
     if (params.queue && params.status) {
-      setSelectedStatus([params.queue, params.status])
+      setSelectedStatus([decodeURIComponent(params.queue), params.status])
     } else {
       setSelectedStatus(undefined)
     }
   }, [params])
 
+  // selected status changed -> immediate refresh
   useEffect(() => {
     update().catch(console.error)
   }, [selectedStatus])
