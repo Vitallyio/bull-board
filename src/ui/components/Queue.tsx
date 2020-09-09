@@ -124,9 +124,7 @@ export const Queue = ({
           <div key={status}>
             <Link
               to={{
-                pathname: `/bull-board/${encodeURIComponent(
-                  queue.name,
-                )}/${status}`,
+                pathname: `/${encodeURIComponent(queue.name)}/${status}`,
                 // search: "?sort=name",
               }}
             >

@@ -17,7 +17,7 @@ export const App = ({ basePath }: { basePath: string }) => {
   })
 
   return (
-    <Router>
+    <Router basename={basePath}>
       <Header store={store} />
       <Switch>
         <Route
