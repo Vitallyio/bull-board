@@ -76,7 +76,21 @@ export const useStore = (basePath: string): Store => {
       .then(res => (res.ok ? res.json() : Promise.reject(res)))
       .then(data =>
         setState(state => {
-          return { ...state, data, loading: false } as any
+          const next = { ...state, loading: false }
+          if (!next.data) {
+            return { ...state, data }
+          }
+          // always merge the counts
+          for (const key of Object.keys(data.queues)) {
+            next.data.queues[key].counts = data.queues[key].counts
+          }
+          // only clobber job lists for the currently selected queue
+          // (the api returns empty lists for whatever's not currently selected)
+          if (selectedStatus) {
+            const name = selectedStatus[0]
+            next.data.queues[name] = data.queues[name]
+          }
+          return next
         }),
       )
   }

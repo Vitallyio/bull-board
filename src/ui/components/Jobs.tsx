@@ -6,7 +6,7 @@ import { Job } from './Job'
 export const Jobs = ({
   retryJob,
   promoteJob,
-  queue: { jobs, name },
+  queue,
   status,
 }: {
   retryJob: (job: AppJob) => () => Promise<void>
@@ -14,6 +14,8 @@ export const Jobs = ({
   queue: AppQueue
   status: Status
 }) => {
+  const jobs = queue.jobs[status]
+
   if (!jobs.length) {
     return <>No jobs with status {status}</>
   }

@@ -6,7 +6,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const react_1 = __importDefault(require("react"));
 const constants_1 = require("./constants");
 const Job_1 = require("./Job");
-exports.Jobs = ({ retryJob, promoteJob, queue: { jobs, name }, status, }) => {
+exports.Jobs = ({ retryJob, promoteJob, queue, status, }) => {
+    const jobs = queue.jobs[status];
     if (!jobs.length) {
         return react_1.default.createElement(react_1.default.Fragment, null,
             "No jobs with status ",
