@@ -5,14 +5,19 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const react_1 = require("react");
 const querystring_1 = __importDefault(require("querystring"));
+const useSearch_1 = require("./useSearch");
 const interval = 2500;
 exports.useStore = (basePath) => {
+    const params = useSearch_1.getSearchState();
     const [state, setState] = react_1.useState({
         data: null,
         loading: true,
-        search: undefined,
+        search: params.search,
     });
-    const [selectedStatus, setSelectedStatus] = react_1.useState(undefined);
+    const [selectedStatus, setSelectedStatus] = react_1.useState([
+        params.job,
+        params.status,
+    ]);
     const poll = react_1.useRef(undefined);
     const stopPolling = () => {
         if (poll.current) {
@@ -62,7 +67,7 @@ exports.useStore = (basePath) => {
     const cleanAllCompleted = (queueName) => () => fetch(`${basePath}/queues/${encodeURIComponent(queueName)}/clean/completed`, {
         method: 'put',
     }).then(update);
-    const cleanAllWaiting = (queueName) => () => fetch(`${basePath}/queues/${encodeURIComponent(queueName)}/clean/waiting`, {
+    const cleanAllWaiting = (queueName) => () => fetch(`${basePath}/queues/${encodeURIComponent(queueName)}/clean/wait`, {
         method: 'put',
     }).then(update);
     const setSearch = (search) => setState({ data: state.data, loading: state.loading, search: search });

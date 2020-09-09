@@ -8,12 +8,18 @@ const Queue_1 = require("./Queue");
 const RedisStats_1 = require("./RedisStats");
 const Header_1 = require("./Header");
 const useStore_1 = require("./hooks/useStore");
+const useSearch_1 = require("./hooks/useSearch");
 exports.escapeRegExp = (text) => {
     return text.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, '\\$&');
 };
 exports.App = ({ basePath }) => {
     var _a, _b;
     const { state, selectedStatus, setSearch, setSelectedStatus, promoteJob, retryJob, retryAll, cleanAllDelayed, cleanAllFailed, cleanAllCompleted, cleanAllWaiting, } = useStore_1.useStore(basePath);
+    useSearch_1.useSearch({
+        search: state.search,
+        status: selectedStatus ? selectedStatus[1] : undefined,
+        job: selectedStatus ? selectedStatus[0] : undefined,
+    });
     const regex = state.search
         ? new RegExp(exports.escapeRegExp(state.search), 'i')
         : undefined;
