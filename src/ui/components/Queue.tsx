@@ -7,20 +7,24 @@ import { Link } from 'react-router-dom'
 
 type MenuItemProps = {
   status: Status
+  name: string
   count: number
-  onClick: () => void
-  selected: boolean
+  onClick: () => void // TODO remove
+  selected: boolean // TODO remove
 }
 
-const MenuItem = ({ status, count, onClick, selected }: MenuItemProps) => (
-  <div
+const MenuItem = ({ status, count, name, selected }: MenuItemProps) => (
+  <Link
     className={`menu-item ${status} ${selected ? 'selected' : ''} ${
       count === 0 ? 'off' : 'on'
     }`}
-    onClick={onClick}
+    to={{
+      pathname: `/${encodeURIComponent(name)}/${status}`,
+      // search: "?sort=name",
+    }}
   >
-    {status !== 'latest' && <b className="count">{count}</b>} {status}
-  </div>
+    {status !== 'latest' && <b className="count">{count}</b>}
+  </Link>
 )
 const ACTIONABLE_STATUSES: Array<Status> = [
   'failed',
@@ -117,24 +121,12 @@ export const Queue = ({
   const currentJobSelected =
     selectedStatus != null && selectedStatus[0] === queue.name
   return (
-    <section>
-      <h3>{queue.name}</h3>
-      <div className="menu-list">
-        {keysOf(STATUSES).map(status => (
-          <div key={status}>
-            <Link
-              to={{
-                pathname: `/${encodeURIComponent(queue.name)}/${status}`,
-                // search: "?sort=name",
-              }}
-            >
-              {status}
-            </Link>
-          </div>
-        ))}
-        {keysOf(STATUSES).map(status => (
+    <tr>
+      <td>{queue.name}</td>
+      {keysOf(STATUSES).map(status => (
+        <td key={`${queue.name}-${status}`}>
           <MenuItem
-            key={`${queue.name}-${status}`}
+            name={queue.name}
             status={status}
             count={queue.counts[status]}
             onClick={() => {
@@ -155,8 +147,8 @@ export const Queue = ({
               selectedStatus[1] === status
             }
           />
-        ))}
-      </div>
+        </td>
+      ))}
       {currentJobSelected && selectedStatus && (
         <>
           <QueueActions
@@ -176,6 +168,6 @@ export const Queue = ({
           />
         </>
       )}
-    </section>
+    </tr>
   )
 }

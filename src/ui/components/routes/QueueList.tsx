@@ -1,6 +1,7 @@
 import React from 'react'
 import { Store } from '../hooks/useStore'
 import { Queue as QueueElement } from '../Queue'
+import { STATUSES } from '../constants'
 
 export const escapeRegExp = (text: string) => {
   return text.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, '\\$&')
@@ -10,6 +11,10 @@ interface QueueListProps {
   store: Store
 }
 
+// We need to extend so babel doesn't think it's JSX
+const keysOf = <Target extends {}>(target: Target) =>
+  Object.keys(target) as (keyof Target)[]
+
 export const QueueList = (props: QueueListProps) => {
   const { state } = props.store
   const regex = state.search
@@ -17,11 +22,17 @@ export const QueueList = (props: QueueListProps) => {
     : undefined
 
   return (
-    <main>
+    <>
       {props.store.state.loading ? (
         'Loading...'
       ) : (
-        <>
+        <table>
+          <tr>
+            <td>name</td>
+            {keysOf(STATUSES).map(status => (
+              <td key={`${status}`}>{status}</td>
+            ))}
+          </tr>
           {props.store.state.data?.queues
             .filter(queue => {
               return regex ? queue.name.match(regex) : true
@@ -41,8 +52,8 @@ export const QueueList = (props: QueueListProps) => {
                 cleanAllWaiting={props.store.cleanAllWaiting(queue.name)}
               />
             ))}
-        </>
+        </table>
       )}
-    </main>
+    </>
   )
 }
