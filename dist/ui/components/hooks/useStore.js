@@ -36,7 +36,10 @@ exports.useStore = (basePath) => {
     useInterval_1.useInterval(() => update().catch(console.error), interval);
     const update = () => {
         const urlParam = selectedStatus != null
-            ? querystring_1.default.encode({ [selectedStatus[0]]: selectedStatus[1] })
+            ? querystring_1.default.encode({
+                [selectedStatus[0]]: selectedStatus[1],
+                page: params.page,
+            })
             : '';
         return fetch(`${basePath}/queues/?${urlParam}`)
             .then(res => (res.ok ? res.json() : Promise.reject(res)))

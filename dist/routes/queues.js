@@ -49,6 +49,7 @@ const statuses = [
     'waiting',
 ];
 const getDataForQueues = async (bullBoardQueues, req) => {
+    var _a;
     const query = req.query || {};
     const pairs = Object.entries(bullBoardQueues);
     if (pairs.length == 0) {
@@ -58,6 +59,7 @@ const getDataForQueues = async (bullBoardQueues, req) => {
             queues: {},
         };
     }
+    const page = (_a = query.page) !== null && _a !== void 0 ? _a : 0;
     const queues = {};
     await Promise.all(pairs.map(async ([name, { queue }]) => {
         const counts = await queue.getJobCounts(...statuses);
@@ -72,8 +74,12 @@ const getDataForQueues = async (bullBoardQueues, req) => {
             paused: [],
         };
         if (typeof status === 'string') {
-            const statusJobs = await queue.getJobs(status, 0, 10);
+            const statusJobs = await queue.getJobs(status /* bad type? */, page * 10, (page + 1) * 10);
             jobs[status] = statusJobs.map(formatJob);
+        }
+        else if (query[name] && status.length > 0) {
+            const statusJobs = await queue.getJobs(status /* bad type? */, page * 10, (page + 1) * 10);
+            jobs[query[name]] = statusJobs.map(formatJob);
         }
         queues[name] = {
             name,

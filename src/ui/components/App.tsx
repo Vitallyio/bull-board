@@ -11,7 +11,7 @@ export const App = ({ basePath }: { basePath: string }) => {
     <Router basename={basePath}>
       <Switch>
         <Route
-          path="/:queue/:status"
+          path="/:queue/:status/:page?"
           render={() => <AppInner basePath={basePath} />}
         />
         <Route path="/" render={() => <AppInner basePath={basePath} />} />

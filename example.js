@@ -51,11 +51,16 @@ const run = () => {
     const opts = req.query.opts || {}
 
     exampleBull.add({ title: req.query.title }, opts)
-    queues[(Math.random() * queues.length) | 0].add(
-      'Add',
-      { title: req.query.title },
-      opts,
-    )
+    if (req.query.queue) {
+      queue = queues.find(queue => queue.name === req.query.queue)
+      if (!queue) {
+        throw new Error(`No queue found with name ${req.query.queue}`)
+      }
+      queue.add('Add', { title: req.query.title }, opts)
+    } else {
+      queue = queues[(Math.random() * queues.length) | 0]
+      queue.add('Add', { title: req.query.title }, opts)
+    }
 
     res.json({
       ok: true,

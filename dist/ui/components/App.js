@@ -12,7 +12,7 @@ const JobList_1 = require("./routes/JobList");
 exports.App = ({ basePath }) => {
     return (react_1.default.createElement(react_router_dom_1.BrowserRouter, { basename: basePath },
         react_1.default.createElement(react_router_dom_1.Switch, null,
-            react_1.default.createElement(react_router_dom_1.Route, { path: "/:queue/:status", render: () => react_1.default.createElement(exports.AppInner, { basePath: basePath }) }),
+            react_1.default.createElement(react_router_dom_1.Route, { path: "/:queue/:status/:page?", render: () => react_1.default.createElement(exports.AppInner, { basePath: basePath }) }),
             react_1.default.createElement(react_router_dom_1.Route, { path: "/", render: () => react_1.default.createElement(exports.AppInner, { basePath: basePath }) }))));
 };
 exports.AppInner = ({ basePath }) => {

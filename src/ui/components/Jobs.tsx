@@ -23,27 +23,30 @@ export const Jobs = ({
   }
 
   return (
-    <table>
-      <thead>
-        <tr>
-          {FIELDS[status].map(field => (
-            <th key={field}>{field}</th>
+    <>
+      <table>
+        <thead>
+          <tr>
+            {FIELDS[status].map(field => (
+              <th key={field}>{field}</th>
+            ))}
+          </tr>
+        </thead>
+        <tbody>
+          {jobs.map(job => (
+            <Job
+              key={job.id}
+              job={job}
+              status={status}
+              queueName={queue.name}
+              retryJob={retryJob}
+              cleanJob={cleanJob}
+              promoteJob={promoteJob}
+            />
           ))}
-        </tr>
-      </thead>
-      <tbody>
-        {jobs.map(job => (
-          <Job
-            key={job.id}
-            job={job}
-            status={status}
-            queueName={name}
-            retryJob={retryJob}
-            cleanJob={cleanJob}
-            promoteJob={promoteJob}
-          />
-        ))}
-      </tbody>
-    </table>
+        </tbody>
+      </table>
+    </>
   )
 }
+

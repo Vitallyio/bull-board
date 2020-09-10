@@ -235,3 +235,12 @@ button:active {
   text-align: right;
   color: #070;
 }
+
+.job-pagination {
+  padding: 40px;
+}
+
+.queue-navigation {
+  display: flex;
+  justify-content: center;
+}

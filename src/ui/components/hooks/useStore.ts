@@ -8,12 +8,6 @@ import { useInterval } from './useInterval'
 
 const interval = 2500
 
-interface RouteParams {
-  queue?: string
-  status?: Status
-  search?: string
-}
-
 export type State = {
   data: null | api.GetQueues
   loading: boolean
@@ -24,7 +18,7 @@ export type SelectedStatus = [AppQueue['name'], Status]
 
 export interface Store {
   state: State
-  params: RouteParams
+  params: api.RouteParams
   setSearch: (search: string) => void
   promoteJob: (queueName: string) => (job: AppJob) => () => Promise<void>
   retryJob: (queueName: string) => (job: AppJob) => () => Promise<void>
@@ -41,7 +35,7 @@ export interface Store {
 }
 
 export const useStore = (basePath: string): Store => {
-  const params = useParams<RouteParams>()
+  const params = useParams<api.RouteParams>()
   const [state, setState] = useState({
     data: null,
     loading: true,
@@ -71,7 +65,10 @@ export const useStore = (basePath: string): Store => {
   const update = () => {
     const urlParam =
       selectedStatus != null
-        ? qs.encode({ [selectedStatus[0]]: selectedStatus[1] })
+        ? qs.encode({
+            [selectedStatus[0]]: selectedStatus[1],
+            page: params.page,
+          })
         : ''
     return fetch(`${basePath}/queues/?${urlParam}`)
       .then(res => (res.ok ? res.json() : Promise.reject(res)))

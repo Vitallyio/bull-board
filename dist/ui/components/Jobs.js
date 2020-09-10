@@ -13,9 +13,10 @@ exports.Jobs = ({ retryJob, cleanJob, promoteJob, queue, status, }) => {
             "No jobs with status ",
             status);
     }
-    return (react_1.default.createElement("table", null,
-        react_1.default.createElement("thead", null,
-            react_1.default.createElement("tr", null, constants_1.FIELDS[status].map(field => (react_1.default.createElement("th", { key: field }, field))))),
-        react_1.default.createElement("tbody", null, jobs.map(job => (react_1.default.createElement(Job_1.Job, { key: job.id, job: job, status: status, queueName: name, retryJob: retryJob, cleanJob: cleanJob, promoteJob: promoteJob }))))));
+    return (react_1.default.createElement(react_1.default.Fragment, null,
+        react_1.default.createElement("table", null,
+            react_1.default.createElement("thead", null,
+                react_1.default.createElement("tr", null, constants_1.FIELDS[status].map(field => (react_1.default.createElement("th", { key: field }, field))))),
+            react_1.default.createElement("tbody", null, jobs.map(job => (react_1.default.createElement(Job_1.Job, { key: job.id, job: job, status: status, queueName: queue.name, retryJob: retryJob, cleanJob: cleanJob, promoteJob: promoteJob })))))));
 };
 //# sourceMappingURL=Jobs.js.map
