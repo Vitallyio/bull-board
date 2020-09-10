@@ -7,12 +7,20 @@ exports.useInterval = (callback, delay) => {
         savedCallback.current = callback;
     }, [callback]);
     react_1.useEffect(() => {
+        let id;
         function tick() {
-            var _a;
-            (_a = savedCallback.current) === null || _a === void 0 ? void 0 : _a.call(savedCallback);
+            let called = false;
+            requestAnimationFrame(() => {
+                var _a;
+                (_a = savedCallback.current) === null || _a === void 0 ? void 0 : _a.call(savedCallback);
+                called = true;
+            });
+            if (called === false) {
+                clearInterval(id);
+            }
         }
         if (delay != null) {
-            const id = setInterval(tick, delay);
+            id = setInterval(tick, delay);
             return () => clearInterval(id);
         }
     }, [callback, delay]);

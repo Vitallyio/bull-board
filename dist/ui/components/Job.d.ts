@@ -2,7 +2,7 @@
 import { AppJob } from '../../@types/app';
 export declare const Job: ({ job, status, queueName, retryJob, cleanJob, promoteJob, }: {
     job: AppJob;
-    status: "latest" | "active" | "waiting" | "completed" | "failed" | "delayed" | "paused";
+    status: "active" | "failed" | "waiting" | "paused" | "completed" | "delayed" | "latest";
     queueName: string;
     cleanJob: (job: AppJob) => () => Promise<void>;
     retryJob: (job: AppJob) => () => Promise<void>;
