@@ -243,4 +243,5 @@ button:active {
 .queue-navigation {
   display: flex;
   justify-content: center;
+  align-items: center;
 }
