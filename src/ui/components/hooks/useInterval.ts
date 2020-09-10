@@ -8,11 +8,19 @@ export const useInterval = (callback: () => void, delay: number) => {
   }, [callback])
 
   useEffect(() => {
+    let id: number
     function tick() {
-      savedCallback.current?.()
+      let called = false
+      requestAnimationFrame(() => {
+        savedCallback.current?.()
+        called = true
+      })
+      if (called === false) {
+        clearInterval(id)
+      }
     }
     if (delay != null) {
-      const id = setInterval(tick, delay)
+      id = (setInterval(tick, delay) as any) as number
       return () => clearInterval(id)
     }
   }, [callback, delay])
