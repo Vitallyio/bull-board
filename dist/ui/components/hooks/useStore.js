@@ -41,13 +41,30 @@ exports.useStore = (basePath) => {
         return fetch(`${basePath}/queues/?${urlParam}`)
             .then(res => (res.ok ? res.json() : Promise.reject(res)))
             .then(data => setState(state => {
-            return { ...state, data, loading: false };
+            const next = { ...state, loading: false };
+            if (!next.data) {
+                return { ...state, data };
+            }
+            // always merge the counts
+            for (const key of Object.keys(data.queues)) {
+                next.data.queues[key].counts = data.queues[key].counts;
+            }
+            // only clobber job lists for the currently selected queue
+            // (the api returns empty lists for whatever's not currently selected)
+            if (selectedStatus) {
+                const name = selectedStatus[0];
+                next.data.queues[name] = data.queues[name];
+            }
+            return next;
         }));
     };
     const promoteJob = (queueName) => (job) => () => fetch(`${basePath}/queues/${encodeURIComponent(queueName)}/${job.id}/promote`, {
         method: 'put',
     }).then(update);
     const retryJob = (queueName) => (job) => () => fetch(`${basePath}/queues/${encodeURIComponent(queueName)}/${job.id}/retry`, {
+        method: 'put',
+    }).then(update);
+    const cleanJob = (queueName) => (job) => () => fetch(`${basePath}/queues/${encodeURIComponent(queueName)}/${job.id}/clean`, {
         method: 'put',
     }).then(update);
     const retryAll = (queueName) => () => fetch(`${basePath}/queues/${encodeURIComponent(queueName)}/retry`, {
@@ -73,6 +90,7 @@ exports.useStore = (basePath) => {
         promoteJob,
         retryJob,
         retryAll,
+        cleanJob,
         cleanAllDelayed,
         cleanAllFailed,
         cleanAllCompleted,

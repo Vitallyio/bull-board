@@ -14,6 +14,7 @@ export type Field =
   | 'attempts'
   | 'data'
   | 'id'
+  | 'name'
   | 'opts'
   | 'progress'
   | 'timestamps'
@@ -21,11 +22,30 @@ export type Field =
   | 'failedReason'
   | 'retry'
   | 'promote'
+  | 'clean'
 
 export const FIELDS: Record<Status, Field[]> = {
-  active: ['id', 'attempts', 'data', 'opts', 'progress', 'timestamps'],
-  completed: ['id', 'attempts', 'data', 'opts', 'progress', 'timestamps'],
-  delayed: ['id', 'attempts', 'data', 'delay', 'opts', 'promote', 'timestamps'],
+  active: ['id', 'name', 'attempts', 'data', 'opts', 'progress', 'timestamps'],
+  completed: [
+    'id',
+    'name',
+    'attempts',
+    'data',
+    'opts',
+    'progress',
+    'timestamps',
+  ],
+  delayed: [
+    'id',
+    'name',
+    'attempts',
+    'data',
+    'delay',
+    'opts',
+    'promote',
+    'timestamps',
+    'clean',
+  ],
   failed: [
     'id',
     'attempts',
@@ -35,8 +55,9 @@ export const FIELDS: Record<Status, Field[]> = {
     'progress',
     'retry',
     'timestamps',
+    'clean',
   ],
-  latest: ['id', 'attempts', 'data', 'opts', 'progress', 'timestamps'],
-  paused: ['id', 'attempts', 'data', 'opts', 'timestamps'],
-  waiting: ['id', 'data', 'opts', 'timestamps'],
+  latest: ['id', 'name', 'attempts', 'data', 'opts', 'progress', 'timestamps'],
+  paused: ['id', 'name', 'attempts', 'data', 'opts', 'timestamps'],
+  waiting: ['id', 'name', 'data', 'opts', 'timestamps', 'clean'],
 }

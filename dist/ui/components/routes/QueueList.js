@@ -4,7 +4,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const react_1 = __importDefault(require("react"));
-const Queue_1 = require("../Queue");
+const QueueNav_1 = require("../QueueNav");
 const constants_1 = require("../constants");
 exports.escapeRegExp = (text) => {
     return text.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, '\\$&');
@@ -31,6 +31,6 @@ exports.QueueList = (props) => {
                 return queue.name === selectedStatus[0];
             }
             return true;
-        }).map(queue => (react_1.default.createElement(Queue_1.Queue, { queue: queue, key: queue.name, selectedStatus: store.selectedStatus, selectStatus: store.setSelectedStatus, promoteJob: store.promoteJob(queue.name), retryJob: store.retryJob(queue.name), retryAll: store.retryAll(queue.name), cleanAllDelayed: store.cleanAllDelayed(queue.name), cleanAllFailed: store.cleanAllFailed(queue.name), cleanAllCompleted: store.cleanAllCompleted(queue.name), cleanAllWaiting: store.cleanAllWaiting(queue.name) }))))))));
+        }).map(queue => (react_1.default.createElement(QueueNav_1.QueueNav, { queue: queue, key: queue.name }))))))));
 };
 //# sourceMappingURL=QueueList.js.map

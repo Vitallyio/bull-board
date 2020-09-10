@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { formatDistanceStrict } from 'date-fns'
 import Highlight from 'react-highlight'
 import { AppJob } from '../../@types/app'
@@ -11,11 +11,31 @@ import { Timestamp } from './Timestamp'
 type FieldProps = {
   job: AppJob
   retryJob: () => Promise<void>
+  cleanJob: () => Promise<void>
   delayedJob: () => Promise<void>
 }
 
 const fieldComponents: Record<Field, React.FC<FieldProps>> = {
-  id: ({ job }) => <b>#{job.id}</b>,
+  id: ({ job }) => {
+    const displayShortId = job.id && String(job.id).length > 10
+    const shortId = `${String(job.id).slice(0, 6)}...`
+    const [showId, toggleId] = useState(false)
+
+    return (
+      <>
+        {displayShortId ? (
+          <>
+            <button onClick={() => toggleId(!showId)}>Toggle full id</button>
+            <div style={{ fontWeight: 'bold' }}>
+              #{showId ? job.id : shortId}
+            </div>
+          </>
+        ) : (
+          <b>#{job.id}</b>
+        )}
+      </>
+    )
+  },
 
   timestamps: ({ job }) => (
     <div className="timestamps">
@@ -34,6 +54,8 @@ const fieldComponents: Record<Field, React.FC<FieldProps>> = {
       )}
     </div>
   ),
+
+  name: ({ job }) => <>{job.name === '__default__' ? '--' : job.name}</>,
 
   progress: ({ job }) => {
     switch (typeof job.progress) {
@@ -104,6 +126,8 @@ const fieldComponents: Record<Field, React.FC<FieldProps>> = {
 
   retry: ({ retryJob }) => <button onClick={retryJob}>Retry</button>,
 
+  clean: ({ cleanJob }) => <button onClick={cleanJob}>Clean</button>,
+
   promote: ({ delayedJob }) => <button onClick={delayedJob}>Promote</button>,
 }
 
@@ -112,11 +136,13 @@ export const Job = ({
   status,
   queueName,
   retryJob,
+  cleanJob,
   promoteJob,
 }: {
   job: AppJob
   status: Status
   queueName: string
+  cleanJob: (job: AppJob) => () => Promise<void>
   retryJob: (job: AppJob) => () => Promise<void>
   promoteJob: (job: AppJob) => () => Promise<void>
 }) => {
@@ -130,6 +156,7 @@ export const Job = ({
             <Field
               job={job}
               retryJob={retryJob(job)}
+              cleanJob={cleanJob(job)}
               delayedJob={promoteJob(job)}
             />
           </td>

@@ -42,6 +42,7 @@ export const JobList = (props: JobListProps) => {
       <Jobs
         retryJob={store.retryJob(name)}
         promoteJob={store.promoteJob(name)}
+        cleanJob={store.cleanJob(name)}
         queue={queue}
         status={status}
       />

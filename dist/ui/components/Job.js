@@ -1,9 +1,16 @@
 "use strict";
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (Object.hasOwnProperty.call(mod, k)) result[k] = mod[k];
+    result["default"] = mod;
+    return result;
+};
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const react_1 = __importDefault(require("react"));
+const react_1 = __importStar(require("react"));
 const date_fns_1 = require("date-fns");
 const react_highlight_1 = __importDefault(require("react-highlight"));
 const constants_1 = require("./constants");
@@ -12,9 +19,18 @@ const PlayIcon_1 = require("./PlayIcon");
 const CheckIcon_1 = require("./CheckIcon");
 const Timestamp_1 = require("./Timestamp");
 const fieldComponents = {
-    id: ({ job }) => react_1.default.createElement("b", null,
-        "#",
-        job.id),
+    id: ({ job }) => {
+        const displayShortId = job.id && String(job.id).length > 10;
+        const shortId = `${String(job.id).slice(0, 6)}...`;
+        const [showId, toggleId] = react_1.useState(false);
+        return (react_1.default.createElement(react_1.default.Fragment, null, displayShortId ? (react_1.default.createElement(react_1.default.Fragment, null,
+            react_1.default.createElement("button", { onClick: () => toggleId(!showId) }, "Toggle full id"),
+            react_1.default.createElement("div", { style: { fontWeight: 'bold' } },
+                "#",
+                showId ? job.id : shortId))) : (react_1.default.createElement("b", null,
+            "#",
+            job.id))));
+    },
     timestamps: ({ job }) => (react_1.default.createElement("div", { className: "timestamps" },
         react_1.default.createElement("div", null,
             react_1.default.createElement(PlusIcon_1.PlusIcon, null),
@@ -28,6 +44,7 @@ const fieldComponents = {
             react_1.default.createElement(CheckIcon_1.CheckIcon, null),
             " ",
             react_1.default.createElement(Timestamp_1.Timestamp, { ts: job.finishedOn, prev: job.processedOn }))))),
+    name: ({ job }) => react_1.default.createElement(react_1.default.Fragment, null, job.name === '__default__' ? '--' : job.name),
     progress: ({ job }) => {
         switch (typeof job.progress) {
             case 'object':
@@ -63,13 +80,14 @@ const fieldComponents = {
     },
     opts: ({ job }) => (react_1.default.createElement(react_highlight_1.default, { className: "json" }, JSON.stringify(job.opts, null, 2))),
     retry: ({ retryJob }) => react_1.default.createElement("button", { onClick: retryJob }, "Retry"),
+    clean: ({ cleanJob }) => react_1.default.createElement("button", { onClick: cleanJob }, "Clean"),
     promote: ({ delayedJob }) => react_1.default.createElement("button", { onClick: delayedJob }, "Promote"),
 };
-exports.Job = ({ job, status, queueName, retryJob, promoteJob, }) => {
+exports.Job = ({ job, status, queueName, retryJob, cleanJob, promoteJob, }) => {
     return (react_1.default.createElement("tr", null, constants_1.FIELDS[status].map(field => {
         const Field = fieldComponents[field];
         return (react_1.default.createElement("td", { key: `${queueName}-${job.id}-${field}` },
-            react_1.default.createElement(Field, { job: job, retryJob: retryJob(job), delayedJob: promoteJob(job) })));
+            react_1.default.createElement(Field, { job: job, retryJob: retryJob(job), cleanJob: cleanJob(job), delayedJob: promoteJob(job) })));
     })));
 };
 //# sourceMappingURL=Job.js.map

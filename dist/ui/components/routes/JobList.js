@@ -25,6 +25,6 @@ exports.JobList = (props) => {
     }
     return (react_1.default.createElement(react_1.default.Fragment, null,
         react_1.default.createElement(QueueActions_1.QueueActions, { retryAll: store.retryAll(queue.name), cleanAllDelayed: store.cleanAllDelayed(queue.name), cleanAllFailed: store.cleanAllFailed(queue.name), cleanAllCompleted: store.cleanAllCompleted(queue.name), cleanAllWaiting: store.cleanAllWaiting(queue.name), queue: queue, status: status !== null && status !== void 0 ? status : 'latest' }),
-        react_1.default.createElement(Jobs_1.Jobs, { retryJob: store.retryJob(name), promoteJob: store.promoteJob(name), queue: queue, status: status })));
+        react_1.default.createElement(Jobs_1.Jobs, { retryJob: store.retryJob(name), promoteJob: store.promoteJob(name), cleanJob: store.cleanJob(name), queue: queue, status: status })));
 };
 //# sourceMappingURL=JobList.js.map
