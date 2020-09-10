@@ -1,6 +1,6 @@
 import React from 'react'
 import { Store } from '../hooks/useStore'
-import { Queue as QueueElement } from '../Queue'
+import { QueueNav } from '../QueueNav'
 import { STATUSES } from '../constants'
 import { AppQueue } from '../../../@types/app'
 
@@ -51,19 +51,7 @@ export const QueueList = (props: QueueListProps) => {
                 return true
               })
               .map(queue => (
-                <QueueElement
-                  queue={queue}
-                  key={queue.name}
-                  selectedStatus={store.selectedStatus}
-                  selectStatus={store.setSelectedStatus}
-                  promoteJob={store.promoteJob(queue.name)}
-                  retryJob={store.retryJob(queue.name)}
-                  retryAll={store.retryAll(queue.name)}
-                  cleanAllDelayed={store.cleanAllDelayed(queue.name)}
-                  cleanAllFailed={store.cleanAllFailed(queue.name)}
-                  cleanAllCompleted={store.cleanAllCompleted(queue.name)}
-                  cleanAllWaiting={store.cleanAllWaiting(queue.name)}
-                />
+                <QueueNav queue={queue} key={queue.name} />
               ))}
           </tbody>
         </table>
