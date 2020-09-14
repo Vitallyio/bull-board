@@ -4,17 +4,22 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const react_1 = __importDefault(require("react"));
-const Queue_1 = require("./Queue");
-const RedisStats_1 = require("./RedisStats");
+const react_router_dom_1 = require("react-router-dom");
 const Header_1 = require("./Header");
 const useStore_1 = require("./hooks/useStore");
+const QueueList_1 = require("./routes/QueueList");
+const JobList_1 = require("./routes/JobList");
 exports.App = ({ basePath }) => {
-    var _a, _b;
-    const { state, selectedStatus, setSelectedStatus, promoteJob, retryJob, retryAll, cleanAllDelayed, cleanAllFailed, cleanAllCompleted, cleanAllWaiting, } = useStore_1.useStore(basePath);
+    return (react_1.default.createElement(react_router_dom_1.BrowserRouter, { basename: basePath },
+        react_1.default.createElement(react_router_dom_1.Switch, null,
+            react_1.default.createElement(react_router_dom_1.Route, { path: "/:queue/:status/:page?", render: () => react_1.default.createElement(exports.AppInner, { basePath: basePath }) }),
+            react_1.default.createElement(react_router_dom_1.Route, { path: "/", render: () => react_1.default.createElement(exports.AppInner, { basePath: basePath }) }))));
+};
+exports.AppInner = ({ basePath }) => {
+    const store = useStore_1.useStore(basePath);
     return (react_1.default.createElement(react_1.default.Fragment, null,
-        react_1.default.createElement(Header_1.Header, null),
-        react_1.default.createElement("main", null, state.loading ? ('Loading...') : (react_1.default.createElement(react_1.default.Fragment, null,
-            ((_a = state.data) === null || _a === void 0 ? void 0 : _a.stats) ? (react_1.default.createElement(RedisStats_1.RedisStats, { stats: state.data.stats })) : (react_1.default.createElement(react_1.default.Fragment, null, "No stats to display ")), (_b = state.data) === null || _b === void 0 ? void 0 :
-            _b.queues.map(queue => (react_1.default.createElement(Queue_1.Queue, { queue: queue, key: queue.name, selectedStatus: selectedStatus, selectStatus: setSelectedStatus, promoteJob: promoteJob(queue.name), retryJob: retryJob(queue.name), retryAll: retryAll(queue.name), cleanAllDelayed: cleanAllDelayed(queue.name), cleanAllFailed: cleanAllFailed(queue.name), cleanAllCompleted: cleanAllCompleted(queue.name), cleanAllWaiting: cleanAllWaiting(queue.name) }))))))));
+        react_1.default.createElement(Header_1.Header, { store: store }),
+        react_1.default.createElement(QueueList_1.QueueList, { store: store }),
+        store.selectedStatus && react_1.default.createElement(JobList_1.JobList, { store: store })));
 };
 //# sourceMappingURL=App.js.map

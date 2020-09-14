@@ -5,46 +5,69 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const react_1 = require("react");
 const querystring_1 = __importDefault(require("querystring"));
+const react_router_dom_1 = require("react-router-dom");
+const useInterval_1 = require("./useInterval");
 const interval = 2500;
 exports.useStore = (basePath) => {
+    var _a;
+    const params = react_router_dom_1.useParams();
     const [state, setState] = react_1.useState({
         data: null,
         loading: true,
+        search: params.search,
     });
-    const [selectedStatus, setSelectedStatus] = react_1.useState(undefined);
-    const poll = react_1.useRef(undefined);
-    const stopPolling = () => {
-        if (poll.current) {
-            clearTimeout(poll.current);
-            poll.current = undefined;
-        }
-    };
+    const [selectedStatus, setSelectedStatus] = react_1.useState([
+        params.queue,
+        (_a = params.status) !== null && _a !== void 0 ? _a : 'latest',
+    ]);
+    // route params change -> update state
     react_1.useEffect(() => {
-        stopPolling();
-        runPolling();
-        return stopPolling;
+        if (params.queue && params.status) {
+            setSelectedStatus([decodeURIComponent(params.queue), params.status]);
+        }
+        else {
+            setSelectedStatus(undefined);
+        }
+    }, [params]);
+    // selected status changed -> immediate refresh
+    react_1.useEffect(() => {
+        update().catch(console.error);
     }, [selectedStatus]);
-    const runPolling = () => {
-        update()
-            // eslint-disable-next-line no-console
-            .catch(error => console.error('Failed to poll', error))
-            .then(() => {
-            const timeoutId = setTimeout(runPolling, interval);
-            poll.current = timeoutId;
-        });
-    };
+    useInterval_1.useInterval(() => update().catch(console.error), interval);
     const update = () => {
         const urlParam = selectedStatus != null
-            ? querystring_1.default.encode({ [selectedStatus[0]]: selectedStatus[1] })
+            ? querystring_1.default.encode({
+                [selectedStatus[0]]: selectedStatus[1],
+                page: params.page,
+            })
             : '';
         return fetch(`${basePath}/queues/?${urlParam}`)
             .then(res => (res.ok ? res.json() : Promise.reject(res)))
-            .then(data => setState({ data, loading: false }));
+            .then(data => setState(state => {
+            const next = { ...state, loading: false };
+            if (!next.data) {
+                return { ...state, data };
+            }
+            // always merge the counts
+            for (const key of Object.keys(data.queues)) {
+                next.data.queues[key].counts = data.queues[key].counts;
+            }
+            // only clobber job lists for the currently selected queue
+            // (the api returns empty lists for whatever's not currently selected)
+            if (selectedStatus) {
+                const name = selectedStatus[0];
+                next.data.queues[name] = data.queues[name];
+            }
+            return next;
+        }));
     };
     const promoteJob = (queueName) => (job) => () => fetch(`${basePath}/queues/${encodeURIComponent(queueName)}/${job.id}/promote`, {
         method: 'put',
     }).then(update);
     const retryJob = (queueName) => (job) => () => fetch(`${basePath}/queues/${encodeURIComponent(queueName)}/${job.id}/retry`, {
+        method: 'put',
+    }).then(update);
+    const cleanJob = (queueName) => (job) => () => fetch(`${basePath}/queues/${encodeURIComponent(queueName)}/${job.id}/clean`, {
         method: 'put',
     }).then(update);
     const retryAll = (queueName) => () => fetch(`${basePath}/queues/${encodeURIComponent(queueName)}/retry`, {
@@ -59,14 +82,18 @@ exports.useStore = (basePath) => {
     const cleanAllCompleted = (queueName) => () => fetch(`${basePath}/queues/${encodeURIComponent(queueName)}/clean/completed`, {
         method: 'put',
     }).then(update);
-    const cleanAllWaiting = (queueName) => () => fetch(`${basePath}/queues/${encodeURIComponent(queueName)}/clean/waiting`, {
+    const cleanAllWaiting = (queueName) => () => fetch(`${basePath}/queues/${encodeURIComponent(queueName)}/clean/wait`, {
         method: 'put',
     }).then(update);
+    const setSearch = (search) => setState({ data: state.data, loading: state.loading, search: search });
     return {
         state,
+        params,
+        setSearch,
         promoteJob,
         retryJob,
         retryAll,
+        cleanJob,
         cleanAllDelayed,
         cleanAllFailed,
         cleanAllCompleted,

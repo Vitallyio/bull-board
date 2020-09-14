@@ -2,15 +2,19 @@
 import { Status } from '../constants';
 import * as api from '../../../@types/api';
 import { AppQueue, AppJob } from '../../../@types/app';
-declare type State = {
+export declare type State = {
     data: null | api.GetQueues;
     loading: boolean;
+    search: string | undefined;
 };
 export declare type SelectedStatus = [AppQueue['name'], Status];
 export interface Store {
     state: State;
+    params: api.RouteParams;
+    setSearch: (search: string) => void;
     promoteJob: (queueName: string) => (job: AppJob) => () => Promise<void>;
     retryJob: (queueName: string) => (job: AppJob) => () => Promise<void>;
+    cleanJob: (queueName: string) => (job: AppJob) => () => Promise<void>;
     retryAll: (queueName: string) => () => Promise<void>;
     cleanAllDelayed: (queueName: string) => () => Promise<void>;
     cleanAllFailed: (queueName: string) => () => Promise<void>;
@@ -20,4 +24,3 @@ export interface Store {
     setSelectedStatus: React.Dispatch<React.SetStateAction<SelectedStatus | undefined>>;
 }
 export declare const useStore: (basePath: string) => Store;
-export {};

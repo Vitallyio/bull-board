@@ -1,2 +1,5 @@
 /// <reference types="react" />
-export declare const Header: () => JSX.Element;
+import { Store } from './hooks/useStore';
+export declare const Header: ({ store }: {
+    store: Store;
+}) => JSX.Element;

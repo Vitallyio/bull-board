@@ -1,3 +1,10 @@
+# fastest way to get started developing the ui
+
+- [x] have docker installed
+- in two terminal sessions/windows
+  - [x] ```start:dev``` starts docker redis and server (which serves bundle)
+  - [x] ```start:ui``` starts webpack in dev, watch modes
+
 # bull-board 🎯
 
 Bull Dashboard is a UI built on top of [Bull](https://github.com/OptimalBits/bull) to help you visualize your queues and their jobs.
@@ -27,6 +34,14 @@ As this library provides only the visualization for your queues, keep in mind th
 - This library doesn't hijack Bull's way of working.
 
 If you want to learn more about queues and Redis: https://redis.io/.
+
+## Alpha Release v1.0.0
+
+The code in the main branch is under alpha release, you can install it by using specific versions in your `package.json` file, otherwise you can checkout the branch `latest-stable` for our current stable release.
+
+This README file is **not** matching the alpha version, we are changing APIs and we need to update the documentation.
+
+For the brave and valuable souls help me trying to test the alpha, plese refer to [examples.js file](./example.js) to check how to implement it.
 
 ## Starting
 

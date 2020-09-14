@@ -37,5 +37,13 @@ export interface AppJob {
 export interface AppQueue {
   name: string
   counts: Record<Status, number>
-  jobs: AppJob[]
+  jobs: {
+    latest: AppJob[]
+    active: AppJob[]
+    waiting: AppJob[]
+    completed: AppJob[]
+    failed: AppJob[]
+    delayed: AppJob[]
+    paused: AppJob[]
+  }
 }

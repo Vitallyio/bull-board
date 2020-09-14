@@ -11,6 +11,7 @@ const retryAll_1 = require("./routes/retryAll");
 const retryJob_1 = require("./routes/retryJob");
 const promoteJob_1 = require("./routes/promoteJob");
 const cleanAll_1 = require("./routes/cleanAll");
+const cleanJob_1 = require("./routes/cleanJob");
 const index_1 = require("./routes/index");
 const bullBoardQueues = {};
 const wrapAsync = (fn) => async (req, res, next) => Promise.resolve(fn(req, res, next)).catch(next);
@@ -20,12 +21,13 @@ router.locals.bullBoardQueues = bullBoardQueues;
 router.set('view engine', 'ejs');
 router.set('views', path_1.default.resolve(__dirname, '../dist/ui'));
 router.use('/static', express_1.default.static(path_1.default.resolve(__dirname, '../static')));
-router.get('/', index_1.entryPoint);
 router.get('/queues', wrapAsync(queues_1.queuesHandler));
 router.put('/queues/:queueName/retry', wrapAsync(retryAll_1.retryAll));
 router.put('/queues/:queueName/:id/retry', wrapAsync(retryJob_1.retryJob));
+router.put('/queues/:queueName/:id/clean', wrapAsync(cleanJob_1.cleanJob));
 router.put('/queues/:queueName/:id/promote', wrapAsync(promoteJob_1.promoteJob));
 router.put('/queues/:queueName/clean/:queueStatus', wrapAsync(cleanAll_1.cleanAll));
+router.get('*', index_1.entryPoint);
 exports.setQueues = (bullQueues) => {
     bullQueues.forEach((queue) => {
         const name = queue instanceof bullmq_1.Queue ? queue.toKey('~') : queue.name;

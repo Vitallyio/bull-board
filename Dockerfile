@@ -2,7 +2,7 @@ FROM node:lts
 
 WORKDIR /app/website
 
-EXPOSE 3000 35729
+EXPOSE 3000 35729 9229
 COPY ./docs /app/docs
 COPY ./website /app/website
 RUN yarn install

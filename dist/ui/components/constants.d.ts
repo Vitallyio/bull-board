@@ -8,5 +8,5 @@ export declare const STATUSES: {
     paused: string;
 };
 export declare type Status = keyof typeof STATUSES;
-export declare type Field = 'attempts' | 'data' | 'id' | 'opts' | 'progress' | 'timestamps' | 'delay' | 'failedReason' | 'retry' | 'promote';
+export declare type Field = 'attempts' | 'data' | 'id' | 'name' | 'opts' | 'progress' | 'timestamps' | 'delay' | 'failedReason' | 'retry' | 'promote' | 'clean';
 export declare const FIELDS: Record<Status, Field[]>;

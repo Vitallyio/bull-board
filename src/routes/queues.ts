@@ -71,26 +71,53 @@ const getDataForQueues = async (
   bullBoardQueues: app.BullBoardQueues,
   req: Request,
 ): Promise<api.GetQueues> => {
-  const query = req.query || {}
+  const query: api.GetQueuesQuery = req.query || {}
   const pairs = Object.entries(bullBoardQueues)
 
   if (pairs.length == 0) {
     return {
       stats: {},
-      queues: [],
+      queueNames: [],
+      queues: {},
     }
   }
 
-  const queues: app.AppQueue[] = await Promise.all(
+  const page = query.page ?? 0
+  const queues: api.GetQueues['queues'] = {}
+  await Promise.all(
     pairs.map(async ([name, { queue }]) => {
       const counts = await queue.getJobCounts(...statuses)
-      const status = query[name] === 'latest' ? statuses : query[name]
-      const jobs: (Job | JobMq)[] = await queue.getJobs(status, 0, 10)
+      const status: Status[] | Status | undefined =
+        query[name] === 'latest' ? statuses : query[name]
+      const jobs: app.AppQueue['jobs'] = {
+        latest: [],
+        active: [],
+        waiting: [],
+        completed: [],
+        failed: [],
+        delayed: [],
+        paused: [],
+      }
+      if (typeof status === 'string') {
+        const statusJobs: (Job | JobMq)[] = await queue.getJobs(
+          (status as any) as string[] /* bad type? */,
+          page * 10,
+          (page + 1) * 10,
+        )
+        jobs[status as Status] = statusJobs.map(formatJob)
+      } else if (query[name] && status.length > 0) {
+        const statusJobs: (Job | JobMq)[] = await queue.getJobs(
+          (status as any) as string[] /* bad type? */,
+          page * 10,
+          (page + 1) * 10,
+        )
+        jobs[query[name]] = statusJobs.map(formatJob)
+      }
 
-      return {
+      queues[name] = {
         name,
         counts: counts as Record<Status, number>,
-        jobs: jobs.map(formatJob),
+        jobs,
       }
     }),
   )
@@ -100,6 +127,7 @@ const getDataForQueues = async (
   return {
     stats,
     queues,
+    queueNames: pairs.map(([name]) => name),
   }
 }
 

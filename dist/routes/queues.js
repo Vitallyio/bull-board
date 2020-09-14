@@ -49,28 +49,49 @@ const statuses = [
     'waiting',
 ];
 const getDataForQueues = async (bullBoardQueues, req) => {
+    var _a;
     const query = req.query || {};
     const pairs = Object.entries(bullBoardQueues);
     if (pairs.length == 0) {
         return {
             stats: {},
-            queues: [],
+            queueNames: [],
+            queues: {},
         };
     }
-    const queues = await Promise.all(pairs.map(async ([name, { queue }]) => {
+    const page = (_a = query.page) !== null && _a !== void 0 ? _a : 0;
+    const queues = {};
+    await Promise.all(pairs.map(async ([name, { queue }]) => {
         const counts = await queue.getJobCounts(...statuses);
         const status = query[name] === 'latest' ? statuses : query[name];
-        const jobs = await queue.getJobs(status, 0, 10);
-        return {
+        const jobs = {
+            latest: [],
+            active: [],
+            waiting: [],
+            completed: [],
+            failed: [],
+            delayed: [],
+            paused: [],
+        };
+        if (typeof status === 'string') {
+            const statusJobs = await queue.getJobs(status /* bad type? */, page * 10, (page + 1) * 10);
+            jobs[status] = statusJobs.map(formatJob);
+        }
+        else if (query[name] && status.length > 0) {
+            const statusJobs = await queue.getJobs(status /* bad type? */, page * 10, (page + 1) * 10);
+            jobs[query[name]] = statusJobs.map(formatJob);
+        }
+        queues[name] = {
             name,
             counts: counts,
-            jobs: jobs.map(formatJob),
+            jobs,
         };
     }));
     const stats = await getStats(pairs[0][1]);
     return {
         stats,
         queues,
+        queueNames: pairs.map(([name]) => name),
     };
 };
 exports.queuesHandler = async (req, res) => {
