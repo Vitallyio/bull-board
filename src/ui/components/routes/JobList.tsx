@@ -34,6 +34,7 @@ export const JobList = (props: JobListProps) => {
       <div className="queue-navigation">
         <QueueActions
           retryAll={store.retryAll(queue.name)}
+          cleanAllActive={store.cleanAllActive(queue.name)}
           cleanAllDelayed={store.cleanAllDelayed(queue.name)}
           cleanAllFailed={store.cleanAllFailed(queue.name)}
           cleanAllCompleted={store.cleanAllCompleted(queue.name)}

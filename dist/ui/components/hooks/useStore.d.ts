@@ -16,6 +16,7 @@ export interface Store {
     retryJob: (queueName: string) => (job: AppJob) => () => Promise<void>;
     cleanJob: (queueName: string) => (job: AppJob) => () => Promise<void>;
     retryAll: (queueName: string) => () => Promise<void>;
+    cleanAllActive: (queueName: string) => () => Promise<void>;
     cleanAllDelayed: (queueName: string) => () => Promise<void>;
     cleanAllFailed: (queueName: string) => () => Promise<void>;
     cleanAllCompleted: (queueName: string) => () => Promise<void>;
