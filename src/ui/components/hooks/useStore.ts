@@ -24,6 +24,7 @@ export interface Store {
   retryJob: (queueName: string) => (job: AppJob) => () => Promise<void>
   cleanJob: (queueName: string) => (job: AppJob) => () => Promise<void>
   retryAll: (queueName: string) => () => Promise<void>
+  cleanAllActive: (queueName: string) => () => Promise<void>
   cleanAllDelayed: (queueName: string) => () => Promise<void>
   cleanAllFailed: (queueName: string) => () => Promise<void>
   cleanAllCompleted: (queueName: string) => () => Promise<void>
@@ -122,6 +123,11 @@ export const useStore = (basePath: string): Store => {
       method: 'put',
     }).then(update)
 
+  const cleanAllActive = (queueName: string) => () =>
+    fetch(`${basePath}/queues/${encodeURIComponent(queueName)}/clean/active`, {
+      method: 'put',
+    }).then(update)
+
   const cleanAllDelayed = (queueName: string) => () =>
     fetch(`${basePath}/queues/${encodeURIComponent(queueName)}/clean/delayed`, {
       method: 'put',
@@ -156,6 +162,7 @@ export const useStore = (basePath: string): Store => {
     retryJob,
     retryAll,
     cleanJob,
+    cleanAllActive,
     cleanAllDelayed,
     cleanAllFailed,
     cleanAllCompleted,

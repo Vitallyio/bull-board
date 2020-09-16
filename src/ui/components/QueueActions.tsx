@@ -3,6 +3,7 @@ import { Status } from './constants'
 import { AppQueue } from '../../@types/app'
 
 const ACTIONABLE_STATUSES: Array<Status> = [
+  'active',
   'failed',
   'delayed',
   'completed',
@@ -12,6 +13,7 @@ const ACTIONABLE_STATUSES: Array<Status> = [
 interface QueueActionProps {
   status: Status
   queue: AppQueue
+  cleanAllActive: () => Promise<void>
   cleanAllDelayed: () => Promise<void>
   cleanAllFailed: () => Promise<void>
   cleanAllCompleted: () => Promise<void>
@@ -25,6 +27,7 @@ const isStatusActionable = (status: Status): boolean =>
 export const QueueActions = ({
   status,
   retryAll,
+  cleanAllActive,
   cleanAllFailed,
   cleanAllDelayed,
   cleanAllCompleted,
@@ -45,6 +48,11 @@ export const QueueActions = ({
             Clean all
           </button>
         </div>
+      )}
+      {status === 'active' && (
+        <button style={{ margin: 10 }} onClick={cleanAllActive}>
+          Clean all
+        </button>
       )}
       {status === 'delayed' && (
         <button style={{ margin: 10 }} onClick={cleanAllDelayed}>
