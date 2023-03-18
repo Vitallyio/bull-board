@@ -1,5 +1,5 @@
 {
-  "name": "bull-board",
+  "name": "bull-board-legacy",
   "description": "Bull queue UI for inspecting jobs",
   "version": "1.0.0-alpha.10",
   "keywords": [
